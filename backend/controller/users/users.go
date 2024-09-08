@@ -2,8 +2,11 @@ package users
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
+
 	"example.com/sa-67-example/config"
+
 	"example.com/sa-67-example/entity"
 )
 

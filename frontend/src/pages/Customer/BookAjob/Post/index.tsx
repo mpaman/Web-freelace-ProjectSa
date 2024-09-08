@@ -1,74 +1,102 @@
-import React from 'react';
-import { Button, Card, Avatar, Space, Carousel } from 'antd';
-import { UserOutlined } from "@ant-design/icons";
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Space, Table, Col, Row, Divider, message, Button } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Link } from "react-router-dom";
+import { GetPostwork } from "../../../../services/https/index";
+import { PostworkInterface } from "../../../../interfaces/Postwork";
 
+function Postwork() {
+    const [postworks, setPostworks] = useState<PostworkInterface[]>([]);
+    const [messageApi, contextHolder] = message.useMessage();
 
-const contentStyle: React.CSSProperties = {
-    height: '550px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-    fontSize: '18px',
-};
+    const columns: ColumnsType<PostworkInterface> = [
+        {
+            title: "ลำดับ",
+            dataIndex: "ID",
+            key: "id",
+        },
+        {
+            title: "ID ผู้ใช้",
+            dataIndex: "id_user",
+            key: "id_user",
+        },
+        {
+            title: "ID งาน",
+            dataIndex: "id_work",
+            key: "id_work",
+        },
+        {
+            title: "ชื่อผู้ใช้",
+            key: "user_first_name",
+            render: (record) => <>{record?.User?.first_name}</>,
+        },
+        {
+            title: "นามสกุลผู้ใช้",
+            key: "user_last_name",
+            render: (record) => <>{record?.User?.last_name}</>,
+        },
+        {
+            title: "ชื่องาน",
+            key: "work_info",
+            render: (record) => <>{record?.Work?.info}</>,
+        },
+        {
+            title: "หมวดหมู่งาน",
+            key: "work_category",
+            render: (record) => <>{record?.Work?.category}</>,
+        },
+        {
+            title: "ค่าจ้าง",
+            key: "work_wages",
+            render: (record) => <>{record?.Work?.wages}</>,
+        },
+        {
+            title: "จัดการการจอง",
+            key: "actions",
+            render: (record) => (
+                <Link to={`/work/${record.id_work}/managebooking`}>
+                    <Button type="primary">จัดการการจอง</Button>
+                </Link>
+            ),
+        },
+    ];
 
-const PostPage: React.FC = () => {
-    const navigate = useNavigate();
-
-    const handleBookJob = () => {
-        navigate('/promiss');
+    const getPostworks = async () => {
+        let res = await GetPostwork();
+        if (res.status === 200) {
+            setPostworks(res.data);
+        } else {
+            setPostworks([]);
+            messageApi.open({
+                type: "error",
+                content: res.data.error,
+            });
+        }
     };
 
+    useEffect(() => {
+        getPostworks();
+    }, []);
+
     return (
-        <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ width: '60%' }}>
-                <Card style={{ width: '90%', height: '80px', overflowY: 'auto' }}>
-                    <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
-                        ชื่อของงาน
-                    </div>
-                </Card>
-                <Carousel autoplay style={{ width: '90%', height: '600px', overflowY: 'auto' }}>
-                    <div>
-                        <h3 style={contentStyle}>1</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>2</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>3</h3>
-                    </div>
-                    <div>
-                        <h3 style={contentStyle}>4</h3>
-                    </div>
-                </Carousel>
+        <>
+            {contextHolder}
+            <Row>
+                <Col span={12}>
+                    <h2>รายการ Postwork</h2>
+                </Col>
+            </Row>
+            <Divider />
+            <div style={{ marginTop: 20 }}>
+                <Table
+                    rowKey="ID"
+                    columns={columns}
+                    dataSource={postworks}
+                    style={{ width: "100%", overflow: "scroll" }}
+                />
             </div>
-
-            <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <Space wrap size={16}>
-                    <Avatar size="large" icon={<UserOutlined />} />
-                    Sitthichok
-                </Space>
-
-                <Card style={{ width: '50%', height: '200px', overflowY: 'auto', marginTop: '20px' }}>
-                    <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
-                        รายละเอียดงาน
-                    </div>
-                </Card>
-
-                <div style={{
-                    position: 'fixed',
-                    bottom: '70px',
-                    right: '150px',
-                    zIndex: 1000,
-                }}>
-                    <Button type="primary" onClick={handleBookJob}>
-                        จองงาน
-                    </Button>
-                </div>
-            </div>
-        </div>
+        </>
     );
-};
+}
 
-export default PostPage;
+export default Postwork;

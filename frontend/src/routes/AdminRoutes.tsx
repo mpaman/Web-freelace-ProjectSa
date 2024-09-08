@@ -3,30 +3,37 @@ import { RouteObject } from "react-router-dom";
 import Loadable from "../components/third-patry/Loadable";
 import FullLayout from "../layout/FullLayout";
 
+// Authentication pages
 const MainPages = Loadable(lazy(() => import("../pages/authentication/Login")));
 const Dashboard = Loadable(lazy(() => import("../pages/Customer/BookAjob/Home")));
-//ของเพื่อนต้อง Resume
+
+// Resume pages
 const ResumeList = Loadable(lazy(() => import("../pages/Resume")));
-// const Customer = Loadable(lazy(() => import("../pages/Customer/BookAjob/customer")));
 const PersonalCreate = Loadable(lazy(() => import("../pages/Resume/create/personal")));
 const StudyCreate = Loadable(lazy(() => import("../pages/Resume/create/study")));
 const ExperienceCreate = Loadable(lazy(() => import("../pages/Resume/create/experience")));
 const SkillCreate = Loadable(lazy(() => import("../pages/Resume/create/skill")));
 
-// Import the new edit components
+// Edit Resume pages
 const PersonalEdit = Loadable(lazy(() => import("../pages/Resume/edit/personal")));
 const StudyEdit = Loadable(lazy(() => import("../pages/Resume/edit/study")));
 const ExperienceEdit = Loadable(lazy(() => import("../pages/Resume/edit/experience")));
 const SkillEdit = Loadable(lazy(() => import("../pages/Resume/edit/skill")));
 
-// const CreateCustomer = Loadable(lazy(() => import("../pages/customer/create")));
-// const EditCustomer = Loadable(lazy(() => import("../pages/customer/edit")));
+// Freelance pages
 const Post = Loadable(lazy(() => import("../pages/Customer/BookAjob/Post")));
 const Promiss = Loadable(lazy(() => import("../pages/Customer/BookAjob/Promiss")));
 const Sent = Loadable(lazy(() => import("../pages/Customer/BookAjob/Sent")));
-// const UnSent = Loadable(lazy(() => import("../pages/dashboard")));
 const Getmon = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getmoney")));
-const Postjob = Loadable(lazy(() => import("../pages/Customer/Post/Postjob")));
+
+const Postwork = Loadable(lazy(() => import("../pages/Freelance/Post")));
+const EditWork = Loadable(lazy(() => import("../pages/Freelance/Post/edit")));
+const CreateWork = Loadable(lazy(() => import("../pages/Freelance/Post/create")));
+
+// Booking management pages
+const Inpost = Loadable(lazy(() => import("../pages/Customer/BookAjob/Inpost")));
+const Managebooking = Loadable(lazy(() => import("../pages/Customer/BookAjob/managebooking")));
+const BookingDetail = Loadable(lazy(() => import("../pages/Customer/BookAjob/BookingDetail")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
@@ -88,7 +95,6 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     },
                 ],
             },
-
             {
                 path: "post",
                 element: <Post />,
@@ -106,12 +112,40 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 element: <Getmon />,
             },
             {
-                path: "postjob",
-                element: <Postjob />,
+                path: "post/:postId",
+                element: <Inpost />,
+            },
+            // {
+            //     path: "work/:postId/managebooking",
+            //     element: <Managebooking />,
+            // },
+            // {
+            //     path: "booking/:bookingId",
+            //     element: <BookingDetail />,
+            // },
+            {
+                path: "work",
+                children: [
+                    {
+                        path: "",
+                        element: <Postwork />,
+                    },
+                    {
+                        path: "create",
+                        element: <CreateWork />,
+                    },
+                    {
+                        path: "edit/:id",
+                        element: <EditWork />,
+                    },
+                    // {
+                    //     path: ":postId/managebooking", // เพิ่มเส้นทางนี้
+                    //     element: <Managebooking />,
+                    // },
+                ],
             },
         ],
     };
 };
-
 
 export default AdminRoutes;

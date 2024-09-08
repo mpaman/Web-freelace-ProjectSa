@@ -1,5 +1,4 @@
 package config
-
 import "golang.org/x/crypto/bcrypt"
 
 // hashPassword เป็น function สำหรับการแปลง password

@@ -40,9 +40,15 @@ type (
 
 		BirthDay time.Time `json:"birthday"`
 
+		GenderID uint `json:"gender_id"`
+
 		Address string `json:"address"`
 
-		GenderID uint `json:"gender_id"`
+		Category string `json: "category"`
+
+		Wages uint `json: "wages"`
+
+		Contact string `json: "contact"`
 	}
 )
 
@@ -108,9 +114,15 @@ func SignUp(c *gin.Context) {
 
 		BirthDay: payload.BirthDay,
 
+		GenderID: payload.GenderID,
+
 		Address: payload.Address,
 
-		GenderID: payload.GenderID,
+		Category: payload.Category,
+
+		Wages: payload.Wages,
+
+		Contact: payload.Contact,
 	}
 
 	// Save the user to the database

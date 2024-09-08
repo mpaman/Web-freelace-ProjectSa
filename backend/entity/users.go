@@ -23,7 +23,13 @@ type Users struct {
 
 	GenderID uint `json:"gender_id"`
 
+	Gender *Genders `gorm:"foreignKey: gender_id" json:"gender"`
+
 	Address string `json:"address"`
 
-	Gender *Genders `gorm:"foreignKey: gender_id" json:"gender"`
+	Category string `json: "category"`
+
+	Wages uint `json: "wages"`
+
+	Contact string `json: "contact"`
 }
