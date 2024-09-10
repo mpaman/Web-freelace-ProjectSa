@@ -6,9 +6,13 @@ import (
 
 type Booking struct {
     gorm.Model
-    BookingID string `gorm:"unique;not null" json:"booking_id"`
-    WorkID    string `json:"work_id"`
-    UserID    string `json:"user_id"`
-    Details   string `json:"details"`
-    Status    string `json:"status"` // e.g., "pending", "accepted", "rejected"
+
+    WorkID       uint      `json:"work_id"`
+    Work         Work      `gorm:"foreignKey:WorkID;references:ID"`
+
+    BookerUsers   []Users   `gorm:"many2many:booking_users;joinForeignKey:BookingID;joinReferences:UserID"`
+    PosterUserID  uint     `json:"poster_user_id"`
+    PosterUser    Users     `gorm:"foreignKey:PosterUserID;references:ID"`
+
+    Status        string   `json:"status"` // เช่น "pending", "accepted", "rejected"
 }

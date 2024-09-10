@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+
 import type { UploadProps } from 'antd';
 import { message, Upload } from 'antd';
 import { Card } from 'antd';
 const { Dragger } = Upload;
-import { UserOutlined } from "@ant-design/icons";
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { GetPostworkById, BookJob } from "../../../../services/https/index";
 const props: UploadProps = {
     name: 'file',
     multiple: true,
@@ -29,14 +29,41 @@ const props: UploadProps = {
 
 
 const Getmoney: React.FC = () => {
+    const { postId } = useParams<{ postId: string }>();
     const navigate = useNavigate();
+    const [postwork, setPostwork] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [messageApi] = message.useMessage();
 
-    // const handleAccept = () => {
-    //     navigate('/sent');  // Navigate to Sent page on accept
-    // };
+
+
+    useEffect(() => {
+        const fetchPostwork = async () => {
+            try {
+                const res = await GetPostworkById(postId);
+                if (res.status === 200) {
+                    setPostwork(res.data);
+                } else {
+                    messageApi.open({
+                        type: "error",
+                        content: "Failed to load post details",
+                    });
+                }
+            } catch (error) {
+                messageApi.open({
+                    type: "error",
+                    content: "Error fetching post details",
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPostwork();
+    }, [postId]);
 
     const handleReject = () => {
-        navigate('/sent');  // Navigate to UnSent page on reject
+        navigate(`/post/${postId}/sent`);
     };
     return (
         <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

@@ -49,13 +49,6 @@ function CreateWorkPage() {
                 onFinish={onFinish}
             >
                 <Form.Item
-                    label="Work ID"
-                    name="work_id"
-                    rules={[{ required: true, message: "กรุณากรอก Work ID!" }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
                     label="รายละเอียดงาน"
                     name="info"
                     rules={[{ required: true, message: "กรุณากรอกรายละเอียดงาน!" }]}

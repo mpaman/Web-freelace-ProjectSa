@@ -117,6 +117,14 @@ func Create(c *gin.Context) {
     }
 
     c.JSON(http.StatusCreated, gin.H{"message": "Work created successfully", "work": work, "postwork": postwork})
+    var booking entity.Booking
+	booking.PosterUserID = user.ID
+	booking.WorkID = work.ID
+
+	if err := db.Create(&booking).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create Booking"})
+		return
+	}
 }
 
 // Update handles updating a specific work entity by ID

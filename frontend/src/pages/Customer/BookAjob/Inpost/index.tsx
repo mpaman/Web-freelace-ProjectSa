@@ -4,21 +4,12 @@ import { UserOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from 'react-router-dom';
 import { GetPostworkById, BookJob } from "../../../../services/https/index";
 
-const contentStyle: React.CSSProperties = {
-    height: '550px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-    fontSize: '18px',
-};
 
 const PostPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
     const navigate = useNavigate();
     const [postwork, setPostwork] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [isBooked, setIsBooked] = useState<boolean>(false);  // New state to track booking status
     const [messageApi] = message.useMessage();
 
     useEffect(() => {
@@ -47,26 +38,7 @@ const PostPage: React.FC = () => {
     }, [postId]);
 
     const handleBookJob = async () => {
-        try {
-            const res = await BookJob(postId);
-            if (res.status === 200) {
-                messageApi.open({
-                    type: "success",
-                    content: "จองงานสำเร็จ",
-                });
-                setIsBooked(true); // Mark as booked
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: "Failed to book the job",
-                });
-            }
-        } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: "Error booking the job",
-            });
-        }
+        navigate(`/post/${postId}/sent`);
     };
 
     if (loading) {
@@ -110,8 +82,8 @@ const PostPage: React.FC = () => {
                     right: '150px',
                     zIndex: 1000,
                 }}>
-                    <Button type="primary" onClick={handleBookJob} disabled={isBooked}>
-                        {isBooked ? "จองงานสำเร็จ" : "จองงาน"}
+                    <Button type="primary" onClick={handleBookJob}>
+                        จองงาน
                     </Button>
                 </div>
             </div>

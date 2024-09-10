@@ -58,17 +58,17 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/Post">
+                            <Link to="/checkPost">
                                 <PlusOutlined style={{ color: 'white' }} />
                                 <span> โพสงาน</span>
                             </Link>
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/resume">
+                            {/* <Link to="/resume"> */}
                                 <UserOutlined style={{ color: 'white' }} />
                                 <span> Resume</span>
-                            </Link>
+                            {/* </Link> */}
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
@@ -79,10 +79,10 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/managebooking">
+                            {/* <Link to="/managebooking"> */}
                                 <UserOutlined style={{ color: 'white' }} />
                                 <span> ติดตามงาน</span>
-                            </Link>
+                            {/* </Link> */}
                         </Button>
 
                         <Space wrap size={16}>
@@ -110,10 +110,10 @@ const FullLayout: React.FC = () => {
                     <div style={{ padding: 24, minHeight: "100%", background: '#f0f2f5' }}>
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
-                            <Route path="/Post" element={<Post />} />
+                            <Route path="/checkPost" element={<Post />} />
                             <Route path="/post/:postId" element={<Inpost />} />
                             <Route path="/promiss" element={<Promiss />} />
-                            <Route path="/sent" element={<Sent />} />
+                            <Route path="/post/:postId/sent" element={<Sent />} />
                             <Route path="/getmon" element={<Getmon />} />
 
                             <Route path="/work" element={<Postwork />} />

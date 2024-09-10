@@ -84,15 +84,6 @@ function WorkEdit() {
                     autoComplete="off"
                 >
                     <Row gutter={[16, 0]}>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
-                            <Form.Item
-                                label="Work ID"
-                                name="work_id"
-                                rules={[{ required: true, message: "กรุณากรอก Work ID!" }]}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
 
                         <Col xs={24} sm={24} md={24} lg={24} xl={12}>
                             <Form.Item

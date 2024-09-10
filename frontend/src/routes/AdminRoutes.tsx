@@ -96,7 +96,7 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 ],
             },
             {
-                path: "post",
+                path: "checkPost",
                 element: <Post />,
             },
             {
@@ -104,7 +104,7 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 element: <Promiss />,
             },
             {
-                path: "sent",
+                path: "post/:postId/sent",
                 element: <Sent />,
             },
             {
