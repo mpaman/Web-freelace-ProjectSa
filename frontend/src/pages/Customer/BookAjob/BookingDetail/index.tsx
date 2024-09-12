@@ -90,9 +90,9 @@ const BookingDetail: React.FC = () => {
         <div style={{ padding: '20px' }}>
             <Card title="Booking Details" style={{ width: '100%' }}>
                 <p><strong>Booking ID:</strong> {booking?.id}</p>
-                <p><strong>User:</strong> {booking?.userName}</p>
-                <p><strong>Post ID:</strong> {booking?.postId}</p>
-                <p><strong>Details:</strong> {booking?.details}</p>
+                <p><strong>bookerUserId:</strong> {booking?.bookerUserId}</p>
+                <p><strong>posterUserId:</strong> {booking?.posterUserId}</p>
+                <p><strong>name booker:</strong> {booking?.NameBooker}</p>
                 <p><strong>Status:</strong> {booking?.status}</p>
                 
                 <Space style={{ marginTop: '20px' }}>

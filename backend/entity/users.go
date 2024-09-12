@@ -32,4 +32,6 @@ type Users struct {
 	Wages uint `json: "wages"`
 
 	Contact string `json: "contact"`
+
+	Profile string `gorm:"type:longtext"`
 }

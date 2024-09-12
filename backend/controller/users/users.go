@@ -101,19 +101,57 @@ func Update(c *gin.Context) {
 }
 
 func Delete(c *gin.Context) {
-
 	id := c.Param("id")
 
 	db := config.DB()
 
-	if tx := db.Exec("DELETE FROM users WHERE id = ?", id); tx.RowsAffected == 0 {
+	// Start a transaction
+	tx := db.Begin()
 
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id not found"})
-
+	// Delete associated Postwork entries
+	if err := tx.Where("iduser = ?", id).Delete(&entity.Postwork{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Postwork entries"})
 		return
-
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Deleted successful"})
+	// Delete the User
+	if err := tx.Delete(&entity.Users{}, id).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete user"})
+		return
+	}
 
+	// Commit the transaction
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
+}
+
+func GetUserProfile(c *gin.Context) {
+	// Extract user email from the context
+	email, _ := c.Get("userEmail")
+
+	var user entity.Users
+	db := config.DB()
+
+	result := db.Preload("Gender").Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	// Return user profile details
+	c.JSON(http.StatusOK, gin.H{
+		"Profile":   user.Profile, // Ensure this field exists in your `Users` model
+		"FirstName": user.FirstName,
+		"LastName":  user.LastName,
+	})
+}
+
+// Mock function to extract user ID from the token
+func extractUserIDFromToken(token string) (uint, error) {
+	// Implement your token parsing and validation logic here
+	// This is a placeholder function
+	return 1, nil // Replace with actual implementation
 }

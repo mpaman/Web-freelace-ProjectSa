@@ -1,17 +1,15 @@
-import { UsersInterface } from "../../interfaces/IUser";
-import { SignInInterface } from "../../interfaces/SignIn";
-import { WorkInterface } from "../../interfaces/work";
-import { PostworkInterface } from "../../interfaces/Postwork";
-import axios from "axios";
+import axios from 'axios';
+import { UsersInterface } from '../../interfaces/IUser';
+import { SignInInterface } from '../../interfaces/SignIn';
+import { WorkInterface } from '../../interfaces/work';
+import { BookingInterface } from '../../interfaces/Booking';
 
-const apiUrl = "http://localhost:8000"; 
-
+const apiUrl = "http://localhost:8000";
 
 // Create requestOptions for each API call
 function getRequestOptions() {
     const Authorization = localStorage.getItem("token");
     const Bearer = localStorage.getItem("token_type");
-
     return {
         headers: {
             "Content-Type": "application/json",
@@ -27,19 +25,30 @@ async function SignIn(data: SignInInterface) {
         .catch((e) => e.response);
 }
 
+
 async function GetUsers() {
     return await axios
         .get(`${apiUrl}/users`, getRequestOptions())
         .then((res) => res)
         .catch((e) => e.response);
 }
-
-async function GetWork() {
-    return await axios
-        .get(`${apiUrl}/works`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
+async function GetUserId(): Promise<string> {
+    try {
+        const response = await axios.get(`${apiUrl}/user/profile`, getRequestOptions());
+        if (response.status === 200 && response.data && response.data.id) {
+            return response.data.id;
+        } else {
+            throw new Error('User ID not found in response');
+        }
+    } catch (error) {
+        console.error('Error fetching user ID:', error);
+        throw error;
+    }
 }
+
+
+
+
 
 async function GetPostwork() {
     return await axios
@@ -47,42 +56,18 @@ async function GetPostwork() {
         .then((res) => res)
         .catch((e) => e.response);
 }
-
-async function GetUsersById(id: string) {
-    return await axios
-        .get(`${apiUrl}/user/${id}`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
-async function GetWorkById(id: string) {
-    return await axios
-        .get(`${apiUrl}/work/${id}`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
 async function GetPostworkById(id: string) {
     return await axios
         .get(`${apiUrl}/postwork/${id}`, getRequestOptions())
         .then((res) => res)
         .catch((e) => e.response);
 }
-// Get booking details by ID
-async function GetBookingById(id: string) {
-    return await axios
-        .get(`${apiUrl}/booking/${id}`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
-// Update booking status
-async function UpdateBookingStatus(id: string, status: 'accepted' | 'rejected') {
-    return await axios
-        .put(`${apiUrl}/booking/${id}/status`, { status }, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
+// async function GetUserId(id: string) {
+//     return await axios
+//         .get(`${apiUrl}/user/${id}`, getRequestOptions())
+//         .then((res) => res)
+//         .catch((e) => e.response);
+// }
 
 async function UpdateUsersById(id: string, data: UsersInterface) {
     return await axios
@@ -90,14 +75,6 @@ async function UpdateUsersById(id: string, data: UsersInterface) {
         .then((res) => res)
         .catch((e) => e.response);
 }
-
-async function UpdateWorkById(id: string, data: WorkInterface) {
-    return await axios
-        .put(`${apiUrl}/work/${id}`, data, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
 async function DeleteUsersById(id: string) {
     return await axios
         .delete(`${apiUrl}/user/${id}`, getRequestOptions())
@@ -105,20 +82,37 @@ async function DeleteUsersById(id: string) {
         .catch((e) => e.response);
 }
 
-async function DeleteWorkById(id: string) {
+
+async function GetWork() {
     return await axios
-        .delete(`${apiUrl}/work/${id}`, getRequestOptions())
+        .get(`${apiUrl}/works`, getRequestOptions())
         .then((res) => res)
         .catch((e) => e.response);
 }
-
 async function CreateUser(data: UsersInterface) {
     return await axios
         .post(`${apiUrl}/signup`, data, getRequestOptions())
         .then((res) => res)
         .catch((e) => e.response);
 }
-
+async function GetWorkById(id: string) {
+    return await axios
+        .get(`${apiUrl}/work/${id}`, getRequestOptions())
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function UpdateWorkById(id: string, data: WorkInterface) {
+    return await axios
+        .put(`${apiUrl}/work/${id}`, data, getRequestOptions())
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function DeleteWorkById(id: string) {
+    return await axios
+        .delete(`${apiUrl}/work/${id}`, getRequestOptions())
+        .then((res) => res)
+        .catch((e) => e.response);
+}
 async function CreateWork(data: WorkInterface) {
     return await axios
         .post(`${apiUrl}/work`, data, getRequestOptions())
@@ -126,17 +120,20 @@ async function CreateWork(data: WorkInterface) {
         .catch((e) => e.response);
 }
 
-// New Functions for Booking Management
 
-// Create a new booking
-async function BookJob(postId: string) {
+
+
+
+//Booking
+
+async function CreateBooking(data: BookingInterface) {
     return await axios
-        .post(`${apiUrl}/bookings`, { postId }, getRequestOptions())
+        .post(`${apiUrl}/booking`, data, getRequestOptions()) // Use singular 'booking'
         .then((res) => res)
         .catch((e) => e.response);
 }
 
-// Accept a booking
+
 async function AcceptBooking(bookingId: string) {
     return await axios
         .put(`${apiUrl}/bookings/${bookingId}/accept`, {}, getRequestOptions())
@@ -155,7 +152,6 @@ async function RejectBooking(bookingId: string) {
 export {
     SignIn,
     GetUsers,
-    GetUsersById,
     UpdateUsersById,
     DeleteUsersById,
     CreateUser,
@@ -166,7 +162,8 @@ export {
     CreateWork,
     GetPostwork,
     GetPostworkById,
-    BookJob,
     AcceptBooking,
     RejectBooking,
+    GetUserId,
+    CreateBooking,
 };

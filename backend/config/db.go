@@ -44,6 +44,7 @@ func SetupDatabase() {
 		&entity.Work{},
 		&entity.Postwork{},
 		&entity.Booking{},
+		&entity.Submission{},
 	)
 
 	GenderMale := entity.Genders{Gender: "Male"}
@@ -64,7 +65,7 @@ func SetupDatabase() {
 
 		LastName: "Analysis",
 
-		Email: "mpaman@gmail.com",
+		Email: "sa@gmail.com",
 
 		Age: 80,
 
@@ -81,6 +82,8 @@ func SetupDatabase() {
 		Wages: 2500,
 
 		Contact: "096-721-1316",
+
+		
 	}
 
 	Work := &entity.Work{

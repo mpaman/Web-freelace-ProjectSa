@@ -1,18 +1,22 @@
 package entity
 
 import (
-    "gorm.io/gorm"
+	"gorm.io/gorm"
 )
 
 type Booking struct {
-    gorm.Model
+	gorm.Model
 
-    WorkID       uint      `json:"work_id"`
-    Work         Work      `gorm:"foreignKey:WorkID;references:ID"`
+	WorkID uint `json:"work_id"`
+	Work   Work `gorm:"foreignKey:WorkID;references:ID"`
 
-    BookerUsers   []Users   `gorm:"many2many:booking_users;joinForeignKey:BookingID;joinReferences:UserID"`
-    PosterUserID  uint     `json:"poster_user_id"`
-    PosterUser    Users     `gorm:"foreignKey:PosterUserID;references:ID"`
+	BookerUserID uint `json:"booker_user_id"`
 
-    Status        string   `json:"status"` // เช่น "pending", "accepted", "rejected"
+	BookerUser Users `gorm:"foreignKey:BookerUserID;references:ID"`
+
+	PosterUserID uint `json:"poster_user_id"`
+
+	PosterUser Users `gorm:"foreignKey:PosterUserID;references:ID"`
+
+	Status string `json:"status"` // เช่น "pending", "accepted", "rejected"
 }

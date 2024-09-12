@@ -3,36 +3,34 @@ import { Button, Card, message, Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetPostworkById } from '../../../../services/https/index';  // Assuming you have the same service function
+import { GetPostworkById } from '../../../../services/https/index';
+import axios from 'axios';
 
 const { Dragger } = Upload;
 
 const uploadProps: UploadProps = {
     name: 'file',
-    multiple: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+    multiple: false,
+    action: 'http://localhost:8000/upload',
     onChange(info) {
         const { status } = info.file;
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
         if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);
+            // Save the file link in the state for submission
+            setFileLink(info.file.response.file_url);
         } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
-    },
-    onDrop(e) {
-        console.log('Dropped files', e.dataTransfer.files);
     },
 };
 
 const Sent: React.FC = () => {
     const navigate = useNavigate();
-    const { postId } = useParams<{ postId: string }>();  // Assuming you're passing postId in the URL
+    const { postId } = useParams<{ postId: string }>();
     const [postwork, setPostwork] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [messageApi] = message.useMessage();
+    const [fileLink, setFileLink] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchPostwork = async () => {
@@ -59,8 +57,36 @@ const Sent: React.FC = () => {
         fetchPostwork();
     }, [postId, messageApi]);
 
-    const handleAccept = () => {
-        navigate('/getmon');  // Navigate to Sent page on accept
+    const handleAccept = async () => {
+        if (fileLink) {
+            try {
+                const res = await axios.post(`http://localhost:8000/submissions/${postId}`, {
+                    file_link: fileLink,
+                });
+                if (res.status === 200) {
+                    messageApi.open({
+                        type: "success",
+                        content: "Submission successful!",
+                    });
+                    navigate('/getmon'); // Navigate to Sent page on success
+                } else {
+                    messageApi.open({
+                        type: "error",
+                        content: "Submission failed",
+                    });
+                }
+            } catch (error) {
+                messageApi.open({
+                    type: "error",
+                    content: "Error creating submission",
+                });
+            }
+        } else {
+            messageApi.open({
+                type: "error",
+                content: "No file uploaded",
+            });
+        }
     };
 
     if (loading) {
