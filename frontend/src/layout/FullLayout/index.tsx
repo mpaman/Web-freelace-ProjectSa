@@ -16,6 +16,7 @@ import Managebooking from "../../pages/Customer/BookAjob/managebooking";
 import Promiss from "../../pages/Customer/BookAjob/Promiss";
 import Sent from "../../pages/Customer/BookAjob/Sent";
 import Getmon from "../../pages/Customer/BookAjob/Getmoney";
+import Getwork from "../../pages/Customer/BookAjob/Getwork";
 
 import ResumeList from "../../pages/Resume";
 import PersonalCreate from "../../pages/Resume/create/personal";
@@ -79,10 +80,10 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            {/* <Link to="/managebooking"> */}
+                            <Link to="/submissions">
                                 <UserOutlined style={{ color: 'white' }} />
                                 <span> ติดตามงาน</span>
-                            {/* </Link> */}
+                            </Link>
                         </Button>
 
                         <Space wrap size={16}>
@@ -112,6 +113,10 @@ const FullLayout: React.FC = () => {
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/works" element={<Post />} />
                             <Route path="/works/:id/bookings" element={<Managebooking />} />
+
+                            <Route path="/submissions" element={<Getwork />} />
+
+
                             <Route path="/post/:postId" element={<Inpost />} />
                             <Route path="/promiss" element={<Promiss />} />
                             <Route path="/post/:postId/sent" element={<Sent />} />

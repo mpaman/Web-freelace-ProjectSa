@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Card, message, Upload } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
-import type { UploadProps } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Card, message, Input } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetPostworkById } from '../../../../services/https/index';
 import axios from 'axios';
 
-const { Dragger } = Upload;
+const { TextArea } = Input;
 
 const Sent: React.FC = () => {
     const navigate = useNavigate();
@@ -42,22 +40,6 @@ const Sent: React.FC = () => {
         fetchPostwork();
     }, [postId, messageApi]);
 
-    // File upload properties
-    const uploadProps: UploadProps = {
-        name: 'file',
-        multiple: false,
-        action: 'http://localhost:8000/upload',
-        onChange(info) {
-            const { status } = info.file;
-            if (status === 'done') {
-                message.success(`${info.file.name} uploaded successfully.`);
-                setFileLink(info.file.response.file_url); // Save the uploaded file link
-            } else if (status === 'error') {
-                message.error(`${info.file.name} upload failed.`);
-            }
-        },
-    };
-
     // Handle submission
     const handleAccept = async () => {
         if (fileLink) {
@@ -85,11 +67,9 @@ const Sent: React.FC = () => {
                 message.error("Error creating submission");
             }
         } else {
-            message.error("No file uploaded");
+            message.error("No file link provided");
         }
     };
-    
-    
 
     if (loading) {
         return <div>Loading...</div>;
@@ -116,16 +96,15 @@ const Sent: React.FC = () => {
             </div>
 
             <div style={{ width: '30%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                {/* File Upload Section */}
-                <Dragger {...uploadProps}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                    <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
-                    </p>
-                </Dragger>
+                {/* File Link Input Section */}
+                <div style={{ marginBottom: '20px' }}>
+                    <TextArea
+                        rows={4}
+                        placeholder="ใส่ลิงก์ไฟล์ที่นี่"
+                        value={fileLink || ''}
+                        onChange={(e) => setFileLink(e.target.value)}
+                    />
+                </div>
 
                 {/* Send Job Button */}
                 <div style={{

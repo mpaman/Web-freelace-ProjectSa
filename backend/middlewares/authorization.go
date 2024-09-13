@@ -36,7 +36,6 @@ func Authorizes() gin.HandlerFunc {
             return
         }
 
-        // Add the claims (including email) to the context
         c.Set("userEmail", claims.Email)
         c.Next()
     }

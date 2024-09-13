@@ -105,7 +105,6 @@ func Create(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find user"})
         return
     }
-
     // Create a new Postwork entry
     var postwork entity.Postwork
     postwork.IDuser = user.ID

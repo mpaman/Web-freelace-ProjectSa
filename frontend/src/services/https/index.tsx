@@ -161,9 +161,17 @@ async function RejectBooking(bookingId: string) {
         .then((res) => res)
         .catch((e) => e.response);
 }
+async function GetSubmissions() {
+    return await axios
+        .get(`${apiUrl}/submissions`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
 
 export {
     SignIn,
+    GetSubmissions,
     GetUsers,
     UpdateUsersById,
     DeleteUsersById,

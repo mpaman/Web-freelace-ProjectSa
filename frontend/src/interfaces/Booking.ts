@@ -8,5 +8,5 @@ export interface BookingInterface {
     User?: {
         first_name: string;
         last_name: string;
-    }; // Optional user details
+    };
 }

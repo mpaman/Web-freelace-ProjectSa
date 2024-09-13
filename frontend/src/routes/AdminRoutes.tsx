@@ -34,7 +34,7 @@ const CreateWork = Loadable(lazy(() => import("../pages/Freelance/Post/create"))
 // Booking management pages
 const Inpost = Loadable(lazy(() => import("../pages/Customer/BookAjob/Inpost")));
 const Managebooking = Loadable(lazy(() => import("../pages/Customer/BookAjob/managebooking")));
-const BookingDetail = Loadable(lazy(() => import("../pages/Customer/BookAjob/BookingDetail")));
+const Getwork = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getwork")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
@@ -95,7 +95,8 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                         ],
                     },
                 ],
-            },{
+            },
+            {
                 path: "works",
                 children: [
                     {
@@ -105,6 +106,15 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     {
                         path: ":workID/bookings",
                         element: <Managebooking />,
+                    },
+                ],
+            },
+            {
+                path: "submissions",
+                children: [
+                    {
+                        path: "",
+                        element: <Getwork />,
                     },
                 ],
             },

@@ -32,6 +32,7 @@ func main() {
 	
     r.POST("/upload", submission.UploadFile)
     r.POST("/postwork/:id/sent", submission.CreateSubmission)
+    r.GET("/submissions", submission.GetSubmissions)
 
     // Authorized Routes
     authorized := r.Group("/")
@@ -44,6 +45,13 @@ func main() {
 
     authorized.GET("/user/profile", users.GetUserProfile)
 
+
+
+
+	//test
+
+	// authorized.GET("/submissions", submission.GetSubmissions)
+    // authorized.GET("/submissions/:id", work.Get)
     // Work Routes
     authorized.POST("/works", work.Create)
     authorized.GET("/works", work.GetAll)
