@@ -26,6 +26,7 @@ const Promiss = Loadable(lazy(() => import("../pages/Customer/BookAjob/Promiss")
 const Sent = Loadable(lazy(() => import("../pages/Customer/BookAjob/Sent")));
 const Getmon = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getmoney")));
 
+// Postwork pages
 const Postwork = Loadable(lazy(() => import("../pages/Freelance/Post")));
 const EditWork = Loadable(lazy(() => import("../pages/Freelance/Post/edit")));
 const CreateWork = Loadable(lazy(() => import("../pages/Freelance/Post/create")));
@@ -94,10 +95,18 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                         ],
                     },
                 ],
-            },
-            {
-                path: "checkPost",
-                element: <Post />,
+            },{
+                path: "works",
+                children: [
+                    {
+                        path: "",
+                        element: <Post />,
+                    },
+                    {
+                        path: ":workID/bookings",
+                        element: <Managebooking />,
+                    },
+                ],
             },
             {
                 path: "promiss",
@@ -115,14 +124,6 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 path: "post/:postId",
                 element: <Inpost />,
             },
-            // {
-            //     path: "work/:postId/managebooking",
-            //     element: <Managebooking />,
-            // },
-            // {
-            //     path: "booking/:bookingId",
-            //     element: <BookingDetail />,
-            // },
             {
                 path: "work",
                 children: [
@@ -138,10 +139,6 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                         path: "edit/:id",
                         element: <EditWork />,
                     },
-                    // {
-                    //     path: ":postId/managebooking", // เพิ่มเส้นทางนี้
-                    //     element: <Managebooking />,
-                    // },
                 ],
             },
         ],

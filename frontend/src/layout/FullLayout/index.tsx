@@ -58,7 +58,7 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/checkPost">
+                            <Link to="/works">
                                 <PlusOutlined style={{ color: 'white' }} />
                                 <span> โพสงาน</span>
                             </Link>
@@ -110,7 +110,8 @@ const FullLayout: React.FC = () => {
                     <div style={{ padding: 24, minHeight: "100%", background: '#f0f2f5' }}>
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
-                            <Route path="/checkPost" element={<Post />} />
+                            <Route path="/works" element={<Post />} />
+                            <Route path="/works/:id/bookings" element={<Managebooking />} />
                             <Route path="/post/:postId" element={<Inpost />} />
                             <Route path="/promiss" element={<Promiss />} />
                             <Route path="/post/:postId/sent" element={<Sent />} />
@@ -120,7 +121,7 @@ const FullLayout: React.FC = () => {
                             <Route path="/work/create" element={<Creatework />} />
                             <Route path="/work/edit/:id" element={<Editwork />} />
                             
-                            <Route path="/managebooking" element={<Managebooking />} />
+
                             <Route path="/resume" element={<ResumeList />} />
                             <Route path="/resume/create/personal" element={<PersonalCreate />} />
                             <Route path="/resume/create/study" element={<StudyCreate />} />

@@ -54,7 +54,7 @@ function Postwork() {
             title: "จัดการการจอง",
             key: "actions",
             render: (record) => (
-                <Link to={`/work/${record.id_work}/managebooking`}>
+                <Link to={`/works/${record.id_work}/bookings`}>
                     <Button type="primary">จัดการการจอง</Button>
                 </Link>
             ),

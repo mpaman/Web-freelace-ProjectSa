@@ -117,7 +117,6 @@ func Create(c *gin.Context) {
     }
 
     c.JSON(http.StatusCreated, gin.H{"message": "Work created successfully", "work": work, "postwork": postwork})
-    
 }
 
 // Update handles updating a specific work entity by ID
@@ -146,13 +145,28 @@ func Update(c *gin.Context) {
 // Delete handles deleting a specific work entity by ID
 func Delete(c *gin.Context) {
     ID := c.Param("id")
-    var work entity.Work
 
     db := config.DB()
-    if err := db.Delete(&work, ID).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+
+    // Start a transaction
+    tx := db.Begin()
+
+    // Delete associated Postwork entries
+    if err := tx.Where("idwork = ?", ID).Delete(&entity.Postwork{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Postwork entries"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "Work deleted successfully"})
+    // Delete the Work
+    if err := tx.Delete(&entity.Work{}, ID).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusNotFound, gin.H{"error": "Failed to delete work"})
+        return
+    }
+
+    // Commit the transaction
+    tx.Commit()
+
+    c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
 }

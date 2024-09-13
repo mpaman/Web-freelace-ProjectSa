@@ -59,3 +59,23 @@ func Get(c *gin.Context) {
 	// Return the Postwork record as JSON
 	c.JSON(http.StatusOK, postwork)
 }
+
+func Delete(c *gin.Context) {
+	ID := c.Param("id")
+
+	db := config.DB()
+	// Start a transaction to ensure atomicity
+	tx := db.Begin()
+
+	// Delete the Postwork entry
+	if err := tx.Delete(&entity.Postwork{}, ID).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusNotFound, gin.H{"error": "Failed to delete Postwork entry"})
+		return
+	}
+
+	// Commit the transaction
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Postwork deleted successfully"})
+}

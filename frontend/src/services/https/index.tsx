@@ -3,132 +3,145 @@ import { UsersInterface } from '../../interfaces/IUser';
 import { SignInInterface } from '../../interfaces/SignIn';
 import { WorkInterface } from '../../interfaces/work';
 import { BookingInterface } from '../../interfaces/Booking';
+import { PostworkInterface } from "../../interfaces/Postwork";
 
 const apiUrl = "http://localhost:8000";
+const Authorization = localStorage.getItem("token");
+const Bearer = localStorage.getItem("token_type");
 
-// Create requestOptions for each API call
-function getRequestOptions() {
-    const Authorization = localStorage.getItem("token");
-    const Bearer = localStorage.getItem("token_type");
-    return {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `${Bearer} ${Authorization}`,
-        },
-    };
-}
+const requestOptions = {
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: `${Bearer} ${Authorization}`,
+    },
+};
 
 async function SignIn(data: SignInInterface) {
     return await axios
-        .post(`${apiUrl}/signin`, data, getRequestOptions())
+        .post(`${apiUrl}/signin`, data, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
-
 
 async function GetUsers() {
     return await axios
-        .get(`${apiUrl}/users`, getRequestOptions())
+        .get(`${apiUrl}/users`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
-async function GetUserId(): Promise<string> {
-    try {
-        const response = await axios.get(`${apiUrl}/user/profile`, getRequestOptions());
-        if (response.status === 200 && response.data && response.data.id) {
-            return response.data.id;
-        } else {
-            throw new Error('User ID not found in response');
-        }
-    } catch (error) {
-        console.error('Error fetching user ID:', error);
-        throw error;
-    }
-}
-
-
-
-
-
-async function GetPostwork() {
+async function GetUsersById(id: string) {
     return await axios
-        .get(`${apiUrl}/postworks`, getRequestOptions())
+        .get(`${apiUrl}/user/${id}`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
-async function GetPostworkById(id: string) {
-    return await axios
-        .get(`${apiUrl}/postwork/${id}`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-// async function GetUserId(id: string) {
-//     return await axios
-//         .get(`${apiUrl}/user/${id}`, getRequestOptions())
-//         .then((res) => res)
-//         .catch((e) => e.response);
-// }
-
 async function UpdateUsersById(id: string, data: UsersInterface) {
     return await axios
-        .put(`${apiUrl}/user/${id}`, data, getRequestOptions())
+        .put(`${apiUrl}/user/${id}`, data, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
 async function DeleteUsersById(id: string) {
     return await axios
-        .delete(`${apiUrl}/user/${id}`, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
-
-async function GetWork() {
-    return await axios
-        .get(`${apiUrl}/works`, getRequestOptions())
+        .delete(`${apiUrl}/user/${id}`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
 async function CreateUser(data: UsersInterface) {
     return await axios
-        .post(`${apiUrl}/signup`, data, getRequestOptions())
+        .post(`${apiUrl}/signup`, data, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
+export const GetUserProfile = async (): Promise<any> => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+    try {
+        const response = await fetch(`${apiUrl}/user/profile`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to fetch user profile");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        throw error;
+    }
+};
+
+
+async function CreateWork(data: WorkInterface) {
+    return await axios
+        .post(`${apiUrl}/works`, data, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
 async function GetWorkById(id: string) {
     return await axios
-        .get(`${apiUrl}/work/${id}`, getRequestOptions())
+        .get(`${apiUrl}/work/${id}`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+async function GetWork() {
+    return await axios
+        .get(`${apiUrl}/works`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+async function GetPostwork() {
+    return await axios
+        .get(`${apiUrl}/postworks`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function GetPostworkById(id: string) {
+    return await axios
+        .get(`${apiUrl}/postwork/${id}`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function DeletePostworkById(id: string) {
+    return await axios
+        .delete(`${apiUrl}/postwork/${id}`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
 async function UpdateWorkById(id: string, data: WorkInterface) {
     return await axios
-        .put(`${apiUrl}/work/${id}`, data, getRequestOptions())
+        .put(`${apiUrl}/work/${id}`, data, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
 async function DeleteWorkById(id: string) {
     return await axios
-        .delete(`${apiUrl}/work/${id}`, getRequestOptions())
+        .delete(`${apiUrl}/work/${id}`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
-async function CreateWork(data: WorkInterface) {
-    return await axios
-        .post(`${apiUrl}/work`, data, getRequestOptions())
-        .then((res) => res)
-        .catch((e) => e.response);
-}
-
-
-
 
 
 //Booking
 
+export const GetBookingsByWorkID = async (workID: string) => {
+    return await axios
+        .get(`${apiUrl}/works/${workID}/bookings`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+};
+
 async function CreateBooking(data: BookingInterface) {
     return await axios
-        .post(`${apiUrl}/booking`, data, getRequestOptions()) // Use singular 'booking'
+        .post(`${apiUrl}/booking`, data, requestOptions) // Use singular 'booking'
         .then((res) => res)
         .catch((e) => e.response);
 }
@@ -136,7 +149,7 @@ async function CreateBooking(data: BookingInterface) {
 
 async function AcceptBooking(bookingId: string) {
     return await axios
-        .put(`${apiUrl}/bookings/${bookingId}/accept`, {}, getRequestOptions())
+        .put(`${apiUrl}/bookings/${bookingId}/accept`, {}, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
@@ -144,7 +157,7 @@ async function AcceptBooking(bookingId: string) {
 // Reject a booking
 async function RejectBooking(bookingId: string) {
     return await axios
-        .put(`${apiUrl}/bookings/${bookingId}/reject`, {}, getRequestOptions())
+        .put(`${apiUrl}/bookings/${bookingId}/reject`, {}, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
@@ -155,8 +168,9 @@ export {
     UpdateUsersById,
     DeleteUsersById,
     CreateUser,
-    GetWork,
+    GetUsersById,
     GetWorkById,
+    GetWork,
     UpdateWorkById,
     DeleteWorkById,
     CreateWork,
@@ -164,6 +178,7 @@ export {
     GetPostworkById,
     AcceptBooking,
     RejectBooking,
-    GetUserId,
+    DeletePostworkById,
     CreateBooking,
+    
 };

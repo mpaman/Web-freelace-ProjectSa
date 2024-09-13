@@ -118,7 +118,6 @@ func SignUp(c *gin.Context) {
 
 		GenderID: payload.GenderID,
 
-		Address: payload.Address,
 
 		Category: payload.Category,
 

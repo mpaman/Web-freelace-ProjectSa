@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, Avatar, Space, Carousel, message } from 'antd';
 import { UserOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from 'react-router-dom';
-import { GetPostworkById, CreateBooking, GetUserId } from "../../../../services/https/index";
-import { BookingInterface } from "../../../../interfaces/Booking";
+import { GetPostworkById ,getCurrentUserID} from "../../../../services/https/index";
 import axios from 'axios';
 
 const PostPage: React.FC = () => {
@@ -38,17 +37,33 @@ const PostPage: React.FC = () => {
         fetchPostwork();
     }, [postId, messageApi]);
 
+    const handleBookJob = async () => {
+        const bookingPayload = {
+            work_id: postwork?.Work?.ID,
+            poster_user_id: postwork?.User?.ID,
+            booker_user_id: 123, // Replace with actual user ID from context
+            status: 'pending'
+        };
 
-    const handleBookJob = async (postworkId: number) => {
         try {
-            const res = await axios.post(`http://localhost:8000/postwork/${postworkId}/bookings`, {
-            });
-            console.log(res.data);
+            const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
+            if (res.status === 201) {
+                messageApi.open({
+                    type: "success",
+                    content: "Booking created successfully",
+                });
+                navigate(`/post/${postId}/sent`);
+            }
         } catch (error) {
             console.error('Error creating booking:', error);
+            messageApi.open({
+                type: "error",
+                content: "Error creating booking",
+            });
         }
-        navigate(`/post/${postId}/sent`);
     };
+
+
 
     if (loading) {
         return <div>Loading...</div>;
@@ -92,10 +107,11 @@ const PostPage: React.FC = () => {
                         bottom: '70px',
                         right: '150px',
                         zIndex: 1000,
+                        backgroundColor: '#fff',
+                        padding: '10px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
                     }}>
-                        <Button type="primary" onClick={handleBookJob}>
-                            จองงาน
-                        </Button>
+                        <Button type="primary" onClick={handleBookJob}>Book Job</Button>
                     </div>
                 </div>
             </div>

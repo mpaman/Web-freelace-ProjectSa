@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Col, Row, Divider, message, Input, Typography, Select } from "antd";
+import { Col, Row, Divider, message, Input, Typography, Select, Avatar } from "antd";
 import { GetPostwork } from "../../../../services/https/index";
 import { PostworkInterface } from "../../../../interfaces/Postwork";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -15,49 +15,53 @@ function PostworkList() {
     const [messageApi, contextHolder] = message.useMessage();
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-    const navigate = useNavigate(); // Use navigate for routing
+    const navigate = useNavigate();
 
     const getPostworks = async () => {
-        let res = await GetPostwork();
+        try {
+            let res = await GetPostwork();
+            if (res.status === 200) {
+                setPostworks(res.data);
+                setFilteredPostworks(res.data);
 
-        if (res.status === 200) {
-            setPostworks(res.data);
-            setFilteredPostworks(res.data);
-            const uniqueCategories = Array.from(
-                new Set(res.data.map((postwork) => postwork.Work?.category))
-            );
-            setCategories(uniqueCategories);
-        } else {
-            setPostworks([]);
-            setFilteredPostworks([]);
+                // Extract unique categories
+                const uniqueCategories = Array.from(
+                    new Set(res.data.map((postwork) => postwork.Work?.category || ''))
+                ).filter((category) => category !== ''); // Remove empty categories if any
+                setCategories(uniqueCategories);
+            } else {
+                setPostworks([]);
+                setFilteredPostworks([]);
+                messageApi.open({
+                    type: "error",
+                    content: res.data.error,
+                });
+            }
+        } catch (error) {
             messageApi.open({
                 type: "error",
-                content: res.data.error,
+                content: "Failed to fetch postworks",
             });
         }
     };
 
+    const handlePostClick = (postId: number) => {
+        navigate(`/post/${postId}`); // Navigate to PostPage with postId
+    };
+
     const handleSearch = (value: string) => {
         setSearchTerm(value);
-        if (!value) {
-            setFilteredPostworks(
-                selectedCategory
-                    ? postworks.filter((postwork) => postwork.Work?.category === selectedCategory)
-                    : postworks
-            );
-        } else {
-            const filtered = postworks.filter(
-                (postwork) =>
-                    postwork.User?.first_name.toLowerCase().includes(value.toLowerCase()) ||
-                    postwork.User?.last_name.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredPostworks(
-                selectedCategory
-                    ? filtered.filter((postwork) => postwork.Work?.category === selectedCategory)
-                    : filtered
-            );
-        }
+        const filtered = postworks.filter(
+            (postwork) =>
+                postwork.User?.first_name.toLowerCase().includes(value.toLowerCase()) ||
+                postwork.User?.last_name.toLowerCase().includes(value.toLowerCase()) ||
+                postwork.Work?.info.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredPostworks(
+            selectedCategory
+                ? filtered.filter((postwork) => postwork.Work?.category === selectedCategory)
+                : filtered
+        );
     };
 
     const handleSelectChange = (value: string | null) => {
@@ -70,10 +74,6 @@ function PostworkList() {
                     postwork.User?.last_name.toLowerCase().includes(searchTerm.toLowerCase()))
         );
         setFilteredPostworks(filtered);
-    };
-
-    const handlePostClick = (postId: number) => {
-        navigate(`/post/${postId}`); // Navigate to PostPage with postId
     };
 
     useEffect(() => {
@@ -92,6 +92,7 @@ function PostworkList() {
                         style={{ width: 200, marginTop: 10 }}
                         onChange={handleSelectChange}
                         allowClear
+                        value={selectedCategory || undefined} // Ensure controlled value for select
                     >
                         {categories.map((category) => (
                             <Option key={category} value={category}>
@@ -114,15 +115,22 @@ function PostworkList() {
 
             <div style={{ marginTop: 20 }}>
                 {filteredPostworks.map((postwork) => (
-                    <Row
-                        key={postwork.ID}
-                        style={{ marginBottom: 20, cursor: 'pointer' }}
-                        onClick={() => handlePostClick(postwork.ID)} // Link to PostPage
-                    >
-                        <Col span={24}>
-                            <Typography.Text strong>
-                                {postwork.User?.first_name} {postwork.User?.last_name}
-                            </Typography.Text>
+                    <Row key={postwork.ID} style={{ marginBottom: 20 }}>
+                        <Col span={24} onClick={() => handlePostClick(postwork.ID)} style={{ cursor: 'pointer' }}>
+                            <Row align="middle">
+                                <Col>
+                                    <Avatar
+                                        src={postwork.User?.Profile || undefined}
+                                        size={100} // Set the size of the Avatar to 100x100 pixels
+                                        style={{ marginRight: 10 }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Typography.Text strong>
+                                        {postwork.User?.first_name} {postwork.User?.last_name}
+                                    </Typography.Text>
+                                </Col>
+                            </Row>
                             <TextArea
                                 value={postwork.Work?.info || ""}
                                 readOnly

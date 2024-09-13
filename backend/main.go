@@ -7,69 +7,65 @@ import (
 	"example.com/sa-67-example/controller/booking"
 	"example.com/sa-67-example/controller/genders"
 	"example.com/sa-67-example/controller/postwork"
-	submission "example.com/sa-67-example/controller/subnission"
+	"example.com/sa-67-example/controller/submission"
+	"example.com/sa-67-example/middlewares"
 	"example.com/sa-67-example/controller/users"
 	"example.com/sa-67-example/controller/work"
-	"example.com/sa-67-example/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
 const PORT = "8000"
 
 func main() {
-	config.ConnectionDB()
-	config.SetupDatabase()
+    config.ConnectionDB()
+    config.SetupDatabase()
 
-	r := gin.Default()
-	r.Use(CORSMiddleware())
+    r := gin.Default()
+    r.Use(CORSMiddleware())
 
-	// Public Routes
-	r.POST("/signup", users.SignUp)
-	r.POST("/signin", users.SignIn)
-	r.GET("/genders", genders.GetAll)
+    // Public Routes
+    r.POST("/signup", users.SignUp)
+    r.POST("/signin", users.SignIn)
+    r.GET("/genders", genders.GetAll)
+    
+    r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)
+    r.POST("/upload", submission.UploadFile)
+    r.POST("/submissions/:id", submission.CreateSubmission)
 
-	r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)
-
-	r.POST("/upload", submission.UploadFile)
-    r.POST("/submissions/:id",submission.CreateSubmission)
-
-	// Authorized Routes
-	authorized := r.Group("/")
+    // Authorized Routes
+    authorized := r.Group("/")
 	authorized.Use(middlewares.Authorizes())
 
+    authorized.PUT("/user/:id", users.Update)
+    authorized.GET("/users", users.GetAll)
+    authorized.GET("/user/:id", users.Get)
+    authorized.DELETE("/user/:id", users.Delete)
 
-	// User Routes
-	authorized.PUT("/user/:id", users.Update)
-	authorized.GET("/users", users.GetAll)
-	authorized.GET("/user/:id", users.Get)
-	authorized.DELETE("/user/:id", users.Delete)
-	authorized.GET("/user/profile", users.GetUserProfile)  // Add this line
+    authorized.GET("/user/profile", users.GetUserProfile)
 
-	// Work Routes
-	authorized.POST("/work", work.Create)
-	authorized.GET("/works", work.GetAll)
-	authorized.GET("/work/:id", work.Get)
-	authorized.PUT("/work/:id", work.Update)
-	authorized.DELETE("/work/:id", work.Delete)
+    // Work Routes
+    authorized.POST("/works", work.Create)
+    authorized.GET("/works", work.GetAll)
+    authorized.GET("/work/:id", work.Get)
+    authorized.PUT("/work/:id", work.Update)
+    authorized.DELETE("/work/:id", work.Delete)
 
-	// Postwork Routes
-	authorized.GET("/postworks", postwork.GetAll)
-	authorized.GET("/postwork/:id", postwork.Get)
+    authorized.GET("/postworks", postwork.GetAll)
+    authorized.GET("/postwork/:id", postwork.Get)
 
-	// Booking Routes
-	// authorized.POST("/postwork/:id/bookings",booking.CreateBookingFromPostwork)
-	authorized.POST("/booking", booking.Create)
-	authorized.GET("/bookings",booking.GetAllBookings)
-	authorized.GET("/booking/:id", booking.Get)
-	authorized.PUT("/booking/:id", booking.Update)
-	authorized.DELETE("/booking/:id", booking.Delete)
+	authorized.GET("/works/:workID/bookings", booking.GetBookingsByWorkID)
+    authorized.GET("/bookings", booking.GetAllBookings)
+    authorized.GET("/booking/:id", booking.Get)
+    authorized.PUT("/booking/:id", booking.Update)
+    authorized.DELETE("/booking/:id", booking.Delete)
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
-	})
+    r.GET("/", func(c *gin.Context) {
+        c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
+    })
 
-	r.Run("localhost:" + PORT)
+    r.Run("localhost:" + PORT)
 }
+
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

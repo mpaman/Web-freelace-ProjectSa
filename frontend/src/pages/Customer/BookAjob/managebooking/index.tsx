@@ -1,105 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Card, message } from 'antd';
-import { useParams } from 'react-router-dom';
-import { GetPostworkById, AcceptBooking, RejectBooking } from "../../../../services/https/index";
+    import { useState, useEffect } from "react";
+    import { Table, message } from "antd";
+    import type { ColumnsType } from "antd/es/table";
+    import { useParams } from "react-router-dom";
+    import { GetBookingsByWorkID } from "../../../../services/https/index";
+    import { BookingInterface } from "../../../../interfaces/Booking";
 
-const ManageBookings: React.FC = () => {
-    const { postId } = useParams<{ postId: string }>();
-    const [postwork, setPostwork] = useState<any>(null);
-    const [messageApi] = message.useMessage();
+    function Managebooking() {
+        const { workID } = useParams<{ workID: string }>();
+        const [bookings, setBookings] = useState<BookingInterface[]>([]);
+        const [messageApi, contextHolder] = message.useMessage();
 
-    useEffect(() => {
-        const fetchPostwork = async () => {
-            try {
-                const res = await GetPostworkById(postId);
-                if (res.status === 200) {
-                    setPostwork(res.data);
-                } else {
+        const columns: ColumnsType<BookingInterface> = [
+            {
+                title: "ID ผู้ใช้",
+                dataIndex: "booker_user_id",
+                key: "booker_user_id",
+            },
+            {
+                title: "ชื่อผู้ใช้",
+                key: "user_name",
+                render: (record) => (
+                    <>
+                        {record.User ? `${record.User.first_name} ${record.User.last_name}` : "ไม่ระบุ"}
+                    </>
+                ),
+            },
+            {
+                title: "วันที่จอง",
+                dataIndex: "booking_date",
+                key: "booking_date",
+                render: (text) => <>{text ? new Date(text).toLocaleDateString() : "N/A"}</>,
+            },
+            {
+                title: "ID งาน",
+                key: "adjusted_work_id",
+                render: (record) => record.work_id ,
+            },
+        ];
+
+        const getBookings = async () => {
+            if (workID) {
+                try {
+                    let res = await GetBookingsByWorkID(workID);
+                    console.log("API Response:", res);
+                    if (res.status === 200) {
+                        setBookings(res.data);
+                    } else {
+                        setBookings([]);
+                        messageApi.open({
+                            type: "error",
+                            content: res.data.error || "เกิดข้อผิดพลาดในการดึงข้อมูล",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error fetching bookings:", error); // แสดงข้อผิดพลาด
                     messageApi.open({
                         type: "error",
-                        content: "Failed to load post details",
+                        content: "เกิดข้อผิดพลาดในการดึงข้อมูล",
                     });
                 }
-            } catch (error) {
-                messageApi.open({
-                    type: "error",
-                    content: "Error fetching post details",
-                });
             }
         };
 
-        fetchPostwork();
-    }, [postId]);
+        useEffect(() => {
+            getBookings();
+        }, [workID]);
 
-    const handleAccept = async (bookingId: string) => {
-        try {
-            const res = await AcceptBooking(bookingId);
-            if (res.status === 200) {
-                messageApi.open({
-                    type: "success",
-                    content: "Booking accepted",
-                });
-                // Refresh the bookings or update state
-                const updatedPostwork = await GetPostworkById(postId);
-                setPostwork(updatedPostwork.data);
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: "Failed to accept booking",
-                });
-            }
-        } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: "Error accepting booking",
-            });
-        }
-    };
+        return (
+            <>
+                {contextHolder}
+                <h2>จัดการการจองสำหรับงาน ID: {workID}</h2>
+                <Table
+                    rowKey="id"
+                    columns={columns}
+                    dataSource={bookings}
+                    style={{ width: "100%", overflow: "scroll" }}
+                />
+            </>
+        );
+    }
 
-    const handleReject = async (bookingId: string) => {
-        try {
-            const res = await RejectBooking(bookingId);
-            if (res.status === 200) {
-                messageApi.open({
-                    type: "success",
-                    content: "Booking rejected",
-                });
-                // Refresh the bookings or update state
-                const updatedPostwork = await GetPostworkById(postId);
-                setPostwork(updatedPostwork.data);
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: "Failed to reject booking",
-                });
-            }
-        } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: "Error rejecting booking",
-            });
-        }
-    };
-
-    return (
-        <div style={{ padding: '20px' }}>
-            <h2>Manage Bookings for Post ID: {postId}</h2>
-            <Card title="Booking Requests">
-                {postwork?.Bookings?.length > 0 ? (
-                    postwork.Bookings.map((booking: any) => (
-                        <Card key={booking.ID} style={{ marginBottom: '10px' }}>
-                            <p>User: {booking.User?.first_name} {booking.User?.last_name}</p>
-                            <p>Details: {booking.details}</p>
-                            <Button type="primary" onClick={() => handleAccept(booking.ID)}>Accept</Button>
-                            <Button type="danger" onClick={() => handleReject(booking.ID)} style={{ marginLeft: '10px' }}>Reject</Button>
-                        </Card>
-                    ))
-                ) : (
-                    <p>No bookings available</p>
-                )}
-            </Card>
-        </div>
-    );
-};
-
-export default ManageBookings;
+    export default Managebooking;
