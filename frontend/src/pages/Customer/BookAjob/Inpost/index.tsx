@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, Avatar, Space, Carousel, message } from 'antd';
 import { UserOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from 'react-router-dom';
-import { GetPostworkById ,getCurrentUserID} from "../../../../services/https/index";
+import { GetPostworkById } from "../../../../services/https/index";
 import axios from 'axios';
 
 const PostPage: React.FC = () => {
@@ -61,6 +61,7 @@ const PostPage: React.FC = () => {
                 content: "Error creating booking",
             });
         }
+        navigate(`/post/${postId}/sent`);
     };
 
 

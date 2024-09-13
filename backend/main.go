@@ -29,8 +29,9 @@ func main() {
     r.GET("/genders", genders.GetAll)
     
     r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)
+	
     r.POST("/upload", submission.UploadFile)
-    r.POST("/submissions/:id", submission.CreateSubmission)
+    r.POST("/postwork/:id/sent", submission.CreateSubmission)
 
     // Authorized Routes
     authorized := r.Group("/")

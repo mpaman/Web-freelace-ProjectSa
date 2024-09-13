@@ -1,0 +1,104 @@
+create table 'name'(
+	'name' Int primary key,
+	'name' varchar(255),
+	'name' date,
+	'name' text,
+);
+
+drop table 'name';
+
+เพิ่ม
+alter table 'name' ADD 'age int ';  
+
+เปลี่ยน datatype
+alter table 'name' modify 'name datatype not null'; 
+
+เปลี่ยนชื่อ Column
+alter table 'name' change column 'name newname "Datatype"'
+
+ลบ Column
+alter table 'name' drop colmn 'name';
+
+ใส Primary Key 
+alter table 'name' ADD primary key'name';
+
+เพิ่มfk
+alter table 'name' ADD Foreign Key (primary key ที่ต้องการให้เป็น Foreign Key) references namecolumn(primary key); type เดียวกัน
+
+CREATE สร้างตาราง
+DROP      ลบตาราง
+ALTER    แก้ไขตาราง
+
+INSERT  ใส่ข้อมูล
+DELETE   ลบข้อมูล
+UPDATE   แก้ไขข้อมูล
+
+
+INSERT INTO 'name' (column_name1, column_name2,…) VALUES (value1, value2,…); 
+INSERT INTO 'name' VALUES (value1, value2,…) 
+INSERT INTO 'name'(column_name1, column_name2,…) VALUES 
+	(value1, value2,…), 
+	(value3, value4,…), 
+	(value5, value6,…);
+
+UPDATE 'name' SET 
+	column_name1 = expr1, 
+	column_name2 = expr2, 
+WHERE 
+	condition; 
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+DELETE FROM table_name  
+WHERE 
+	condition; 
+
+
+ลบทุกแถวในตาราง
+DELETE FROM table_name; 
+TRUNCATE TABLE table_name; 
+
+DELETE FROM table_name  
+ORDER BY where 
+LIMIT cornt; 
+
+
+select 'เงื่อนไข' from 'where';
+where เงื่อนไข
+group by ชื่อ column
+having เงื่อนไข
+order by ชื่อ column desc มากไปน้อย/asc
+limit 10
+
+
+SELECT *  FROM classicmodels.customers  WHERE city LIKE '%a%' 
+
+select  return_date from rental
+where return_date between '2005-05-25' and '2005-05-27' ;
+
+select  return_date from rental
+where In('usa','Spain');
+contry ='usa' or 'Spain';
+
+
+SELECT DISTINCT country  FROM classicmodels.offices; ไม่แสดงชื่อที่ซ้ำ
+
+
+SELECT customer_id,staff_id, MAX(amount)rental_amount from sakila.payment
+WHERE amount>= 10 and customer_id <=34
+group by payment_id order by staff_id DESC;
+
+
+inner join intercep
+LEFT JOIN
+RIGHT JOIN
+
+
+
+
+
+
+
+
+

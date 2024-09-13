@@ -91,9 +91,6 @@ func SetupDatabase() {
 	}
 
 
-
-
-
 	db.FirstOrCreate(User, &entity.Users{
 
 		Email: "1@gmail.com",

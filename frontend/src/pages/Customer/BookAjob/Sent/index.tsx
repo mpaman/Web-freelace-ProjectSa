@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, Card, message, Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
@@ -8,22 +8,6 @@ import axios from 'axios';
 
 const { Dragger } = Upload;
 
-const uploadProps: UploadProps = {
-    name: 'file',
-    multiple: false,
-    action: 'http://localhost:8000/upload',
-    onChange(info) {
-        const { status } = info.file;
-        if (status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully.`);
-            // Save the file link in the state for submission
-            setFileLink(info.file.response.file_url);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-};
-
 const Sent: React.FC = () => {
     const navigate = useNavigate();
     const { postId } = useParams<{ postId: string }>();
@@ -32,6 +16,7 @@ const Sent: React.FC = () => {
     const [messageApi] = message.useMessage();
     const [fileLink, setFileLink] = useState<string | null>(null);
 
+    // Fetch postwork details
     useEffect(() => {
         const fetchPostwork = async () => {
             try {
@@ -57,37 +42,54 @@ const Sent: React.FC = () => {
         fetchPostwork();
     }, [postId, messageApi]);
 
+    // File upload properties
+    const uploadProps: UploadProps = {
+        name: 'file',
+        multiple: false,
+        action: 'http://localhost:8000/upload',
+        onChange(info) {
+            const { status } = info.file;
+            if (status === 'done') {
+                message.success(`${info.file.name} uploaded successfully.`);
+                setFileLink(info.file.response.file_url); // Save the uploaded file link
+            } else if (status === 'error') {
+                message.error(`${info.file.name} upload failed.`);
+            }
+        },
+    };
+
+    // Handle submission
     const handleAccept = async () => {
         if (fileLink) {
             try {
-                const res = await axios.post(`http://localhost:8000/submissions/${postId}`, {
+                const submissionPayload = {
+                    work_id: postwork?.Work?.ID,
+                    poster_user_id: postwork?.User?.ID,
+                    booker_user_id: 122, // ใส่ Booker User ID ที่แท้จริง
                     file_link: fileLink,
-                });
+                };
+    
+                console.log("Payload:", submissionPayload);
+    
+                const res = await axios.post(`http://localhost:8000/postwork/${postId}/sent`, submissionPayload);
+    
+                console.log("Response from API:", res);
+    
                 if (res.status === 200) {
-                    messageApi.open({
-                        type: "success",
-                        content: "Submission successful!",
-                    });
-                    navigate('/getmon'); // Navigate to Sent page on success
+                    message.success("Submission successful!");
                 } else {
-                    messageApi.open({
-                        type: "error",
-                        content: "Submission failed",
-                    });
+                    message.error("Submission failed");
                 }
             } catch (error) {
-                messageApi.open({
-                    type: "error",
-                    content: "Error creating submission",
-                });
+                console.error("Error from API:", error);
+                message.error("Error creating submission");
             }
         } else {
-            messageApi.open({
-                type: "error",
-                content: "No file uploaded",
-            });
+            message.error("No file uploaded");
         }
     };
+    
+    
 
     if (loading) {
         return <div>Loading...</div>;
@@ -121,8 +123,7 @@ const Sent: React.FC = () => {
                     </p>
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                     <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-                        banned files.
+                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
                     </p>
                 </Dragger>
 
