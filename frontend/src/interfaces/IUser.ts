@@ -2,28 +2,28 @@ export interface UsersInterface {
 
     ID?: number;
 
-    FirstName?: string;
+    first_name?: string;
 
-    LastName?: string;
+    last_name?: string;
 
-    Email?: string;
+    email?: string;
 
     Phone?: string;
 
-    Age?: number;
+    age?: number;
 
     BirthDay?: string;
 
-    GenderID?: number;
+    gender_id?: number;
 
     Password?: string;
 
     Address?: string;
 
-    Category?: string;
+    category?: string;
 
-    Wages?: number;
+    wages?: number;
 
-    Contact?: string;
+    contact?: string;
 
 }

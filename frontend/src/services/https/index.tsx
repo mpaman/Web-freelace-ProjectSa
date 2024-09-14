@@ -29,7 +29,7 @@ async function GetUsers() {
         .then((res) => res)
         .catch((e) => e.response);
 }
-async function GetUsersById(id: string) {
+async function GetUserById(id: string) {
     return await axios
         .get(`${apiUrl}/user/${id}`, requestOptions)
         .then((res) => res)
@@ -176,7 +176,7 @@ export {
     UpdateUsersById,
     DeleteUsersById,
     CreateUser,
-    GetUsersById,
+    GetUserById,
     GetWorkById,
     GetWork,
     UpdateWorkById,

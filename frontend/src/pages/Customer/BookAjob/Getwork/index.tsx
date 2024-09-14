@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-import { Table, Col, Row, Divider, message } from "antd";
+import { Table, Col, Row, Divider, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { GetSubmissions } from "../../../../services/https/index";
+import { GetSubmissions, GetUserById, GetWorkById } from "../../../../services/https/index";
 import { SubmissionInterface } from "../../../../interfaces/submission";
-
-const apiUrl = "http://localhost:8000";
+import { UsersInterface } from "../../../../interfaces/IUser";
+import { WorkInterface } from "../../../../interfaces/work";
 
 function Getsent() {
     const [submissions, setSubmissions] = useState<SubmissionInterface[]>([]);
+    const [users, setUsers] = useState<Record<number, UsersInterface>>({});
+    const [works, setWorks] = useState<Record<number, WorkInterface>>({});
+    const [loading, setLoading] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
 
     const columns: ColumnsType<SubmissionInterface> = [
@@ -17,24 +20,35 @@ function Getsent() {
             key: "booker_user_id",
         },
         {
-            title: "ID งาน",
-            dataIndex: "work_id",
-            key: "work_id",
-        },
-        {
             title: "ชื่อผู้ใช้",
             key: "user_first_name",
-            render: (text, record) => <>{record?.User?.first_name}</>,
+            render: (text, record) => (
+                <>
+                    {users[record.booker_user_id]
+                        ? `${users[record.booker_user_id].first_name}`
+                        : "ไม่ระบุ"}
+                </>
+            ),
         },
         {
             title: "นามสกุลผู้ใช้",
             key: "user_last_name",
-            render: (text, record) => <>{record?.User?.last_name}</>,
+            render: (text, record) => (
+                <>
+                    {users[record.booker_user_id]
+                        ? `${users[record.booker_user_id].last_name}`
+                        : "ไม่ระบุ"}
+                </>
+            ),
         },
         {
             title: "ชื่องาน",
             key: "work_info",
-            render: (text, record) => <>{record?.Work?.info}</>,
+            render: (text, record) => (
+                <>
+                    {works[record.work_id] ? works[record.work_id].info : "ไม่ระบุ"}
+                </>
+            ),
         },
         {
             title: "ไฟล์งาน",
@@ -54,35 +68,81 @@ function Getsent() {
                 );
             },
         },
-        // {
-        //     title: "ไฟล์งาน",
-        //     key: "file_link",
-        //     dataIndex: "file_link",
-        //     render: (text) => text ? <a href={`${apiUrl}/uploads/${text}`} target="_blank" rel="noopener noreferrer">{text}</a> : "No file link available",
-        // },
     ];
 
+    const getUserById = async (userId: number) => {
+        try {
+            let res = await GetUserById(userId);
+            if (res.status === 200) {
+                setUsers(prevUsers => ({
+                    ...prevUsers,
+                    [userId]: res.data
+                }));
+            }
+        } catch (error) {
+            console.error(`Error fetching user ${userId}:`, error);
+            messageApi.open({
+                type: "error",
+                content: `เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ ${userId}`,
+            });
+        }
+    };
+
+    const getWorkById = async (workId: number) => {
+        try {
+            let res = await GetWorkById(workId);
+            if (res.status === 200) {
+                setWorks(prevWorks => ({
+                    ...prevWorks,
+                    [workId]: res.data
+                }));
+            }
+        } catch (error) {
+            console.error(`Error fetching work ${workId}:`, error);
+            messageApi.open({
+                type: "error",
+                content: `เกิดข้อผิดพลาดในการดึงข้อมูลงาน ${workId}`,
+            });
+        }
+    };
+
     const getSubmissions = async () => {
+        setLoading(true);
         try {
             let res = await GetSubmissions();
             console.log("API Response:", res); // ตรวจสอบข้อมูลที่ได้รับ
             if (res.status === 200) {
-                setSubmissions(res.data);
+                const submissionsData = res.data;
+                setSubmissions(submissionsData);
+
+                // ดึงข้อมูลผู้ใช้ทั้งหมดที่เกี่ยวข้อง
+                const userIds = Array.from(new Set(submissionsData.map(submission => submission.booker_user_id)));
+                for (const userId of userIds) {
+                    await getUserById(userId);
+                }
+
+                // ดึงข้อมูลงานทั้งหมดที่เกี่ยวข้อง
+                const workIds = Array.from(new Set(submissionsData.map(submission => submission.work_id)));
+                for (const workId of workIds) {
+                    await getWorkById(workId);
+                }
             } else {
                 setSubmissions([]);
                 messageApi.open({
                     type: "error",
-                    content: res.data.error,
+                    content: res.data.error || "เกิดข้อผิดพลาดในการดึงข้อมูล",
                 });
             }
         } catch (error) {
+            console.error("Error fetching submissions:", error);
             messageApi.open({
                 type: "error",
-                content: "Error fetching submissions.",
+                content: "เกิดข้อผิดพลาดในการดึงข้อมูล",
             });
+        } finally {
+            setLoading(false);
         }
     };
-    
 
     useEffect(() => {
         getSubmissions();
@@ -98,12 +158,16 @@ function Getsent() {
             </Row>
             <Divider />
             <div style={{ marginTop: 20 }}>
-                <Table
-                    rowKey="id"
-                    columns={columns}
-                    dataSource={submissions}
-                    style={{ width: "100%", overflow: "scroll" }}
-                />
+                {loading ? (
+                    <Spin size="large" />
+                ) : (
+                    <Table
+                        rowKey="id"
+                        columns={columns}
+                        dataSource={submissions}
+                        style={{ width: "100%", overflow: "scroll" }}
+                    />
+                )}
             </div>
         </>
     );

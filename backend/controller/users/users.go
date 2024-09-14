@@ -1,186 +1,163 @@
 package users
 
-
 import (
+	"net/http"
 
-   "net/http"
+	"github.com/gin-gonic/gin"
 
+	"example.com/sa-67-example/config"
 
-   "github.com/gin-gonic/gin"
-
-
-   "example.com/sa-67-example/config"
-
-   "example.com/sa-67-example/entity"
-
+	"example.com/sa-67-example/entity"
 )
-
 
 func GetAll(c *gin.Context) {
 
+	var users []entity.Users
 
-   var users []entity.Users
+	db := config.DB()
 
+	results := db.Preload("Gender").Find(&users)
 
-   db := config.DB()
+	if results.Error != nil {
 
-   results := db.Preload("Gender").Find(&users)
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 
-   if results.Error != nil {
+		return
 
-       c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+	}
 
-       return
-
-   }
-
-   c.JSON(http.StatusOK, users)
-
+	c.JSON(http.StatusOK, users)
 
 }
-
 
 func Get(c *gin.Context) {
 
+	ID := c.Param("id")
 
-   ID := c.Param("id")
+	var user entity.Users
 
-   var user entity.Users
+	db := config.DB()
 
+	results := db.Preload("Gender").First(&user, ID)
 
-   db := config.DB()
+	if results.Error != nil {
 
-   results := db.Preload("Gender").First(&user, ID)
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 
-   if results.Error != nil {
+		return
 
-       c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+	}
 
-       return
+	if user.ID == 0 {
 
-   }
+		c.JSON(http.StatusNoContent, gin.H{})
 
-   if user.ID == 0 {
+		return
 
-       c.JSON(http.StatusNoContent, gin.H{})
+	}
 
-       return
-
-   }
-
-   c.JSON(http.StatusOK, user)
-
+	c.JSON(http.StatusOK, user)
 
 }
-
 
 func Update(c *gin.Context) {
 
+	var user entity.Users
 
-   var user entity.Users
+	UserID := c.Param("id")
 
+	db := config.DB()
 
-   UserID := c.Param("id")
+	result := db.First(&user, UserID)
 
+	if result.Error != nil {
 
-   db := config.DB()
+		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
 
-   result := db.First(&user, UserID)
+		return
 
-   if result.Error != nil {
+	}
 
-       c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
+	if err := c.ShouldBindJSON(&user); err != nil {
 
-       return
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
 
-   }
+		return
 
+	}
 
-   if err := c.ShouldBindJSON(&user); err != nil {
+	result = db.Save(&user)
 
-       c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
+	if result.Error != nil {
 
-       return
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 
-   }
+		return
 
+	}
 
-   result = db.Save(&user)
-
-   if result.Error != nil {
-
-       c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
-
-       return
-
-   }
-
-
-   c.JSON(http.StatusOK, gin.H{"message": "Updated successful"})
+	c.JSON(http.StatusOK, gin.H{"message": "Updated successful"})
 
 }
 
-
 func Delete(c *gin.Context) {
-    id := c.Param("id")
+	id := c.Param("id")
 
-    db := config.DB()
+	db := config.DB()
 
-    // Start a transaction
-    tx := db.Begin()
+	// Start a transaction
+	tx := db.Begin()
 
-    // Delete associated Postwork entries
-    if err := tx.Where("iduser = ?", id).Delete(&entity.Postwork{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Postwork entries"})
-        return
-    }
+	// Delete associated Postwork entries
+	if err := tx.Where("iduser = ?", id).Delete(&entity.Postwork{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Postwork entries"})
+		return
+	}
 
-    // Delete the User
-    if err := tx.Delete(&entity.Users{}, id).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete user"})
-        return
-    }
+	// Delete the User
+	if err := tx.Delete(&entity.Users{}, id).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete user"})
+		return
+	}
 
-    // Commit the transaction
-    tx.Commit()
+	// Commit the transaction
+	tx.Commit()
 
-    c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
 }
 
 func GetUserProfile(c *gin.Context) {
-    // Extract user email from the context
-    email, exists := c.Get("userEmail")
-    if !exists {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "User email not found in context"})
-        return
-    }
+	// Extract user email from the context
+	email, exists := c.Get("userEmail")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User email not found in context"})
+		return
+	}
 
-    var user entity.Users
-    db := config.DB()
+	var user entity.Users
+	db := config.DB()
 
-    // Fetch user details from the database
-    result := db.Preload("Gender").Where("email = ?", email).First(&user)
-    if result.Error != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
-        return
-    }
+	// Fetch user details from the database
+	result := db.Preload("Gender").Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
 
-    // Return user profile details
-    c.JSON(http.StatusOK, gin.H{
-        "ID":        user.ID,
-        "Profile":   user.Profile,
-        "FirstName": user.FirstName,
-        "LastName":  user.LastName,
-    })
+	// Return user profile details
+	c.JSON(http.StatusOK, gin.H{
+		"ID":        user.ID,
+		"Profile":   user.Profile,
+		"FirstName": user.FirstName,
+		"LastName":  user.LastName,
+	})
 }
-
-
 
 // Mock function to extract user ID from the token
 func extractUserIDFromToken(token string) (uint, error) {
-    // Implement your token parsing and validation logic here
-    // This is a placeholder function
-    return 1, nil // Replace with actual implementation
+	// Implement your token parsing and validation logic here
+	// This is a placeholder function
+	return 1, nil // Replace with actual implementation
 }

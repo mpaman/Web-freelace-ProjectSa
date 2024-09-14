@@ -1,7 +1,7 @@
 export interface PostworkInterface {
   ID: number; // ID ของ Postwork
-  IDuser: number; // ID ของผู้ใช้ที่สร้างงาน
-  IDwork: number; // ID ของงาน
+  id_user: number; // ID ของผู้ใช้ที่สร้างงาน
+  id_work: number; // ID ของงาน
 
   User?: {
     ID: number; // ID ของผู้ใช้
