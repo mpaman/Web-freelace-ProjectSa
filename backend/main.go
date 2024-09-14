@@ -28,11 +28,12 @@ func main() {
     r.POST("/signin", users.SignIn)
     r.GET("/genders", genders.GetAll)
     
-    r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)
+    r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)//สร้าง Booking
 	
     r.POST("/upload", submission.UploadFile)
-    r.POST("/postwork/:id/sent", submission.CreateSubmission)
-    r.GET("/submissions", submission.GetSubmissions)
+    r.POST("/postwork/:id/sent", submission.CreateSubmission)//สร้าง submission
+
+    r.GET("/submissions", submission.GetSubmissions)//ตาราง sub
 
     // Authorized Routes
     authorized := r.Group("/")

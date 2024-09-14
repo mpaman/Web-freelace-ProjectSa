@@ -13,5 +13,5 @@ export interface SubmissionInterface {
         category: string;
         wages: number;
     };
-    fileLink: string;
+    file_link: string;
 }

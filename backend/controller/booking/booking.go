@@ -4,7 +4,7 @@ import (
     "math/rand"
     "net/http"
     "time"
-	"gorm.io/gorm"
+	// "gorm.io/gorm"
     "github.com/gin-gonic/gin"
     "example.com/sa-67-example/config"
     "example.com/sa-67-example/entity"
@@ -127,33 +127,49 @@ func GetAllBookings(c *gin.Context) {
     c.JSON(http.StatusOK, bookings)
 }
 
+// func CreateBookingFromPostwork(c *gin.Context) {
+// 	var postwork entity.Postwork
+// 	var booking entity.Booking
+// 	var User	entity.Users
+// 	postworkID := c.Param("id")
+
+// 	// Fetch postwork details
+// 	if err := config.DB().Preload("User").Preload("Work").First(&postwork, postworkID).Error; err != nil {
+// 		if err == gorm.ErrRecordNotFound {
+// 			c.JSON(http.StatusNotFound, gin.H{"error": "Postwork not found"})
+// 			return
+// 		}
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	// Retrieve user from context
+// 	// Create Booking
+// 	booking.WorkID = postwork.ID
+// 	booking.PosterUserID = postwork.IDuser
+// 	booking.BookerUserID = User.ID
+// 	booking.Status = "pending"
+
+// 	if err := config.DB().Create(&booking).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{"message": "Booking created successfully", "booking": booking})
+// }
+
 func CreateBookingFromPostwork(c *gin.Context) {
-	var postwork entity.Postwork
-	var booking entity.Booking
-	var User	entity.Users
-	postworkID := c.Param("id")
+    var booking entity.Booking
+    if err := c.ShouldBindJSON(&booking); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
 
-	// Fetch postwork details
-	if err := config.DB().Preload("User").Preload("Work").First(&postwork, postworkID).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Postwork not found"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+    // Save the submission to the database
+    if err := config.DB().Create(&booking).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create submission"})
+        return
+    }
 
-	// Retrieve user from context
-	// Create Booking
-	booking.WorkID = postwork.ID
-	booking.PosterUserID = postwork.IDuser
-	booking.BookerUserID = User.ID
-	booking.Status = "pending"
-
-	if err := config.DB().Create(&booking).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Booking created successfully", "booking": booking})
+    c.JSON(http.StatusOK, gin.H{"message": "Submission created successfully"})
 }

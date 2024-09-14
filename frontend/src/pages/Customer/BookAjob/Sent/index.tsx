@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, message, Input } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetPostworkById } from '../../../../services/https/index';
+import { GetPostworkById,GetUserProfile} from '../../../../services/https/index';
 import axios from 'axios';
 
 const { TextArea } = Input;
@@ -13,9 +13,22 @@ const Sent: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [messageApi] = message.useMessage();
     const [fileLink, setFileLink] = useState<string | null>(null);
+    const [bookerUserId, setBookerUserId] = useState<string | null>(null);
 
+    const fetchUserProfile = async () => {
+        try {
+            const profileRes = await GetUserProfile();
+            setBookerUserId(profileRes.ID || "No ID");
+        } catch (error) {
+            messageApi.open({
+                type: "error",
+                content: "Failed to fetch user profile",
+            });
+        }
+    };
     // Fetch postwork details
     useEffect(() => {
+        fetchUserProfile()
         const fetchPostwork = async () => {
             try {
                 const res = await GetPostworkById(postId);
@@ -39,15 +52,17 @@ const Sent: React.FC = () => {
 
         fetchPostwork();
     }, [postId, messageApi]);
+    
 
+    
     // Handle submission
     const handleAccept = async () => {
-        if (fileLink) {
+        if (bookerUserId) {
             try {
                 const submissionPayload = {
                     work_id: postwork?.Work?.ID,
                     poster_user_id: postwork?.User?.ID,
-                    booker_user_id: 122, // ใส่ Booker User ID ที่แท้จริง
+                    booker_user_id: bookerUserId,
                     file_link: fileLink,
                 };
     

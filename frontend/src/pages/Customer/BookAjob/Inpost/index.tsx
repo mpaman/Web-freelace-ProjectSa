@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, Avatar, Space, Carousel, message } from 'antd';
 import { UserOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from 'react-router-dom';
-import { GetPostworkById } from "../../../../services/https/index";
+import { GetPostworkById,GetUserProfile} from "../../../../services/https/index";
 import axios from 'axios';
 
 const PostPage: React.FC = () => {
@@ -11,8 +11,22 @@ const PostPage: React.FC = () => {
     const [postwork, setPostwork] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [messageApi, contextHolder] = message.useMessage();
+    const [bookerUserId, setBookerUserId] = useState<string | null>(null);
+    
+    const fetchUserProfile = async () => {
+        try {
+            const profileRes = await GetUserProfile();
+            setBookerUserId(profileRes.ID || "No ID");
+        } catch (error) {
+            messageApi.open({
+                type: "error",
+                content: "Failed to fetch user profile",
+            });
+        }
+    };
 
     useEffect(() => {
+        fetchUserProfile()
         const fetchPostwork = async () => {
             try {
                 const res = await GetPostworkById(postId);
@@ -41,25 +55,14 @@ const PostPage: React.FC = () => {
         const bookingPayload = {
             work_id: postwork?.Work?.ID,
             poster_user_id: postwork?.User?.ID,
-            booker_user_id: 123, // Replace with actual user ID from context
+            booker_user_id: bookerUserId,
             status: 'pending'
         };
-
-        try {
-            const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
-            if (res.status === 201) {
-                messageApi.open({
-                    type: "success",
-                    content: "Booking created successfully",
-                });
-                navigate(`/post/${postId}/sent`);
-            }
-        } catch (error) {
-            console.error('Error creating booking:', error);
-            messageApi.open({
-                type: "error",
-                content: "Error creating booking",
-            });
+        const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
+        if (res.status === 200) {
+            message.success("Booking successful!");
+        } else {
+            message.error("Booking failed");
         }
         navigate(`/post/${postId}/sent`);
     };

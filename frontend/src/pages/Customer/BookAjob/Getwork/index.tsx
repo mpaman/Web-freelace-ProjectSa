@@ -38,11 +38,28 @@ function Getsent() {
         },
         {
             title: "ไฟล์งาน",
+            dataIndex: "file_link",
             key: "file_link",
-            render: (text, record) => (
-                <span>{record.fileLink }</span>
-            ),
         },
+        {
+            title: "ตรวจสอบงาน",
+            key: "file_link_action",
+            render: (text, record) => {
+                return record.file_link ? (
+                    <a href={record.file_link} target="_blank" rel="noopener noreferrer">
+                        ตรวจสอบงาน
+                    </a>
+                ) : (
+                    "ไม่มีไฟล์"
+                );
+            },
+        },
+        // {
+        //     title: "ไฟล์งาน",
+        //     key: "file_link",
+        //     dataIndex: "file_link",
+        //     render: (text) => text ? <a href={`${apiUrl}/uploads/${text}`} target="_blank" rel="noopener noreferrer">{text}</a> : "No file link available",
+        // },
     ];
 
     const getSubmissions = async () => {

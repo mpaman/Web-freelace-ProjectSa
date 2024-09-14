@@ -151,11 +151,16 @@ func Delete(c *gin.Context) {
 
 func GetUserProfile(c *gin.Context) {
     // Extract user email from the context
-    email, _ := c.Get("userEmail")
+    email, exists := c.Get("userEmail")
+    if !exists {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "User email not found in context"})
+        return
+    }
 
     var user entity.Users
     db := config.DB()
 
+    // Fetch user details from the database
     result := db.Preload("Gender").Where("email = ?", email).First(&user)
     if result.Error != nil {
         c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
@@ -164,11 +169,13 @@ func GetUserProfile(c *gin.Context) {
 
     // Return user profile details
     c.JSON(http.StatusOK, gin.H{
-        "Profile": user.Profile, // Ensure this field exists in your `Users` model
+        "ID":        user.ID,
+        "Profile":   user.Profile,
         "FirstName": user.FirstName,
-        "LastName": user.LastName,
+        "LastName":  user.LastName,
     })
 }
+
 
 
 // Mock function to extract user ID from the token
