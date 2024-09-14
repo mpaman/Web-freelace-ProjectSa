@@ -34,7 +34,7 @@ func main() {
     r.POST("/postwork/:id/sent", submission.CreateSubmission)//สร้าง submission
 
     r.GET("/submissions", submission.GetSubmissions)//ตาราง sub
-
+    r.GET("/works/:workID/submissions", submission.GetSubmissionsByWorkID)//ตาราง sub
     // Authorized Routes
     authorized := r.Group("/")
 	authorized.Use(middlewares.Authorizes())
@@ -46,14 +46,6 @@ func main() {
 
     authorized.GET("/user/profile", users.GetUserProfile)
 
-
-
-
-	//test
-
-	// authorized.GET("/submissions", submission.GetSubmissions)
-    // authorized.GET("/submissions/:id", work.Get)
-    // Work Routes
     authorized.POST("/works", work.Create)
     authorized.GET("/works", work.GetAll)
     authorized.GET("/work/:id", work.Get)
@@ -64,6 +56,7 @@ func main() {
     authorized.GET("/postwork/:id", postwork.Get)
 
 	authorized.GET("/works/:workID/bookings", booking.GetBookingsByWorkID)
+
     authorized.GET("/bookings", booking.GetAllBookings)
     authorized.GET("/booking/:id", booking.Get)
     authorized.PUT("/booking/:id", booking.Update)

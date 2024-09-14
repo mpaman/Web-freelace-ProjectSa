@@ -6,18 +6,13 @@ import logo from "../../assets/logo.png";
 
 import Dashboard from "../../pages/Customer/BookAjob/Home";
 import Post from "../../pages/Customer/BookAjob/Post";
-
 import Postwork from "../../pages/Freelance/Post";
 import Editwork from "../../pages/Freelance/Post/edit";
 import Creatework from "../../pages/Freelance/Post/create";
-
 import Inpost from "../../pages/Customer/BookAjob/Inpost";
 import Managebooking from "../../pages/Customer/BookAjob/managebooking";
-import Promiss from "../../pages/Customer/BookAjob/Promiss";
 import Sent from "../../pages/Customer/BookAjob/Sent";
-import Getmon from "../../pages/Customer/BookAjob/Getmoney";
 import Getwork from "../../pages/Customer/BookAjob/Getwork";
-
 import ResumeList from "../../pages/Resume";
 import PersonalCreate from "../../pages/Resume/create/personal";
 import StudyCreate from "../../pages/Resume/create/study";
@@ -27,6 +22,9 @@ import PersonalEdit from "../../pages/Resume/edit/personal";
 import StudyEdit from "../../pages/Resume/edit/study";
 import ExperienceEdit from "../../pages/Resume/edit/experience";
 import SkillEdit from "../../pages/Resume/edit/skill";
+
+// import Promiss from "../../pages/Customer/BookAjob/Promiss";
+// import Getmon from "../../pages/Customer/BookAjob/Getmoney";
 
 const { Header, Content, Footer } = Layout;
 
@@ -67,8 +65,8 @@ const FullLayout: React.FC = () => {
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
                             {/* <Link to="/resume"> */}
-                                <UserOutlined style={{ color: 'white' }} />
-                                <span> Resume</span>
+                            <UserOutlined style={{ color: 'white' }} />
+                            <span> Resume</span>
                             {/* </Link> */}
                         </Button>
 
@@ -110,22 +108,24 @@ const FullLayout: React.FC = () => {
                     <Breadcrumb style={{ margin: "16px 0" }} />
                     <div style={{ padding: 24, minHeight: "100%", background: '#f0f2f5' }}>
                         <Routes>
+                            {/* <Route path="/getmon" element={<Getmon />} /> */}
+                            {/* <Route path="/promiss" element={<Promiss />} /> */}
+
                             <Route path="/" element={<Dashboard />} />
+                            <Route path="/post/:postId" element={<Inpost />} />
+
+
                             <Route path="/works" element={<Post />} />
                             <Route path="/works/:id/bookings" element={<Managebooking />} />
+                            <Route path="/works/:id/track" element={<Getwork />} />
 
                             <Route path="/submissions" element={<Getwork />} />
-
-
-                            <Route path="/post/:postId" element={<Inpost />} />
-                            <Route path="/promiss" element={<Promiss />} />
                             <Route path="/post/:postId/sent" element={<Sent />} />
-                            <Route path="/getmon" element={<Getmon />} />
 
                             <Route path="/work" element={<Postwork />} />
                             <Route path="/work/create" element={<Creatework />} />
                             <Route path="/work/edit/:id" element={<Editwork />} />
-                            
+
 
                             <Route path="/resume" element={<ResumeList />} />
                             <Route path="/resume/create/personal" element={<PersonalCreate />} />

@@ -34,7 +34,7 @@ function Managebooking() {
             title: "วันที่จอง",
             dataIndex: "booking_date",
             key: "booking_date",
-            render: (text) => <>{text ? new Date(text).toLocaleDateString() : "N/A"}</>,
+            render: (text) => <>{text ? new Date(text).toLocaleString() : "N/A"}</>,
         },
         {
             title: "ID งาน",

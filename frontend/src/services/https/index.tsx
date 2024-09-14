@@ -137,7 +137,7 @@ export const GetBookingsByWorkID = async (workID: string) => {
         .get(`${apiUrl}/works/${workID}/bookings`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
-};
+}
 
 async function CreateBooking(data: BookingInterface) {
     return await axios
@@ -168,6 +168,12 @@ async function GetSubmissions() {
         .catch((e) => e.response);
 }
 
+export const GetSubmissionsByWorkID = async (workID: string) => {
+    return await axios
+        .get(`${apiUrl}/works/${workID}/submissions`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
 
 export {
     SignIn,

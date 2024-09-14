@@ -22,9 +22,9 @@ const SkillEdit = Loadable(lazy(() => import("../pages/Resume/edit/skill")));
 
 // Freelance pages
 const Post = Loadable(lazy(() => import("../pages/Customer/BookAjob/Post")));
-const Promiss = Loadable(lazy(() => import("../pages/Customer/BookAjob/Promiss")));
+// const Promiss = Loadable(lazy(() => import("../pages/Customer/BookAjob/Promiss")));
 const Sent = Loadable(lazy(() => import("../pages/Customer/BookAjob/Sent")));
-const Getmon = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getmoney")));
+// const Getmon = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getmoney")));
 
 // Postwork pages
 const Postwork = Loadable(lazy(() => import("../pages/Freelance/Post")));
@@ -107,6 +107,10 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                         path: ":workID/bookings",
                         element: <Managebooking />,
                     },
+                    {
+                        path: ":workID/track",
+                        element: <Getwork />,
+                    },
                 ],
             },
             {
@@ -118,18 +122,18 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     },
                 ],
             },
-            {
-                path: "promiss",
-                element: <Promiss />,
-            },
+            // {
+            //     path: "promiss",
+            //     element: <Promiss />,
+            // },
             {
                 path: "post/:postId/sent",
                 element: <Sent />,
             },
-            {
-                path: "getmon",
-                element: <Getmon />,
-            },
+            // {
+            //     path: "getmon",
+            //     element: <Getmon />,
+            // },
             {
                 path: "post/:postId",
                 element: <Inpost />,

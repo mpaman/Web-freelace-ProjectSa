@@ -12,5 +12,4 @@ export interface WorkInterface {
 
     Category?: string;
 
-
 }

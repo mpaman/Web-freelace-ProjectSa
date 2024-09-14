@@ -73,3 +73,21 @@ func GetSubmissions(c *gin.Context) {
 
     c.JSON(http.StatusOK, submissions)
 }
+
+func GetSubmissionsByWorkID(c *gin.Context) {
+    // Receive workID from URL params
+    workID := c.Param("workID")
+
+    // Create a variable to store the submissions
+    var submissions []entity.Submission
+
+    // Find submissions that match the workID
+    err := config.DB().Where("work_id = ?", workID).Find(&submissions).Error
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch submissions"})
+        return
+    }
+
+    // Send submissions back to client
+    c.JSON(http.StatusOK, submissions)
+}
