@@ -22,9 +22,8 @@ const SkillEdit = Loadable(lazy(() => import("../pages/Resume/edit/skill")));
 
 // Freelance pages
 const Post = Loadable(lazy(() => import("../pages/Customer/BookAjob/Post")));
-// const Promiss = Loadable(lazy(() => import("../pages/Customer/BookAjob/Promiss")));
 const Sent = Loadable(lazy(() => import("../pages/Customer/BookAjob/Sent")));
-// const Getmon = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getmoney")));
+
 
 // Postwork pages
 const Postwork = Loadable(lazy(() => import("../pages/Freelance/Post")));
@@ -35,6 +34,8 @@ const CreateWork = Loadable(lazy(() => import("../pages/Freelance/Post/create"))
 const Inpost = Loadable(lazy(() => import("../pages/Customer/BookAjob/Inpost")));
 const Managebooking = Loadable(lazy(() => import("../pages/Customer/BookAjob/managebooking")));
 const Getwork = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getwork")));
+
+const Booking = Loadable(lazy(() => import("../pages/Customer/BookAjob/Bookingwork")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
@@ -122,18 +123,19 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     },
                 ],
             },
-            // {
-            //     path: "promiss",
-            //     element: <Promiss />,
-            // },
+            {
+                path: "bookingbyF",
+                children: [
+                    {
+                        path: "",
+                        element: <Booking />,
+                    },
+                ],
+            },
             {
                 path: "post/:postId/sent",
                 element: <Sent />,
             },
-            // {
-            //     path: "getmon",
-            //     element: <Getmon />,
-            // },
             {
                 path: "post/:postId",
                 element: <Inpost />,

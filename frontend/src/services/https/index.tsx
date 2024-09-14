@@ -171,10 +171,17 @@ async function UpdateBookingStatus(bookingId: number, status: string) {
         .catch((e) => e.response);
 }
 
+async function GetAllBookings() {
+    return await axios
+        .get(`${apiUrl}/bookings`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
 
 
 export {
     SignIn,
+    GetAllBookings,
     GetSubmissions,
     UpdateBookingStatus,
     GetUsers,

@@ -56,16 +56,35 @@ const PostPage: React.FC = () => {
             work_id: postwork?.Work?.ID,
             poster_user_id: postwork?.User?.ID,
             booker_user_id: bookerUserId,
-            status: 'pending'
+            status: 'pending',
         };
-        const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
-        if (res.status === 200) {
-            message.success("Booking successful!");
-        } else {
-            message.error("Booking failed");
+    
+        try {
+            const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
+            if (res.status === 200) {
+                if (res.data.redirect) {
+                    // ถ้าสถานะการจองเป็น accepted จะ redirect ไปยังหน้าถัดไป
+                    message.success("Booking already accepted, proceeding to the next page.");
+                    navigate(`/post/${postId}/sent`);
+                } else {
+                    // แสดงข้อความว่าการจองสำเร็จ แต่ไม่ Redirect
+                    message.success("Booking successful!");
+                    // ไม่ต้อง redirect ไปหน้าถัดไป เพื่อให้ผู้ใช้สามารถอยู่ที่หน้านี้
+                }
+            }
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data.error === "This user has already booked this job"
+            ) {
+                message.error("You have already booked this job.");
+            } else {
+                message.error("Booking failed.");
+            }
         }
-        navigate(`/post/${postId}/sent`);
     };
+    
 
 
 

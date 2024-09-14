@@ -22,6 +22,8 @@ import PersonalEdit from "../../pages/Resume/edit/personal";
 import StudyEdit from "../../pages/Resume/edit/study";
 import ExperienceEdit from "../../pages/Resume/edit/experience";
 import SkillEdit from "../../pages/Resume/edit/skill";
+import Booking from "../../pages/Customer/BookAjob/Bookingwork";
+
 
 // import Promiss from "../../pages/Customer/BookAjob/Promiss";
 // import Getmon from "../../pages/Customer/BookAjob/Getmoney";
@@ -78,7 +80,7 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/submissions">
+                            <Link to="/bookingbyF">
                                 <UserOutlined style={{ color: 'white' }} />
                                 <span> ติดตามงาน</span>
                             </Link>
@@ -113,7 +115,7 @@ const FullLayout: React.FC = () => {
 
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/post/:postId" element={<Inpost />} />
-
+                            <Route path="/bookingbyF" element={<Booking />} />
 
                             <Route path="/works" element={<Post />} />
                             <Route path="/works/:id/bookings" element={<Managebooking />} />

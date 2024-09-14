@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Space, Table, Col, Row, Divider, message, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
-import { GetPostwork } from "../../../../services/https/index";
+import { GetPostwork, GetUserProfile } from "../../../../services/https/index";
 import { PostworkInterface } from "../../../../interfaces/Postwork";
 
 function Postwork() {
     const [postworks, setPostworks] = useState<PostworkInterface[]>([]);
+    const [userId, setUserId] = useState<number | null>(null); // เก็บ userId ของผู้ใช้ที่ล็อกอิน
     const [messageApi, contextHolder] = message.useMessage();
 
     const columns: ColumnsType<PostworkInterface> = [
@@ -67,10 +68,33 @@ function Postwork() {
         },
     ];
 
+    // ฟังก์ชันดึงโปรไฟล์ผู้ใช้
+    const fetchUserProfile = async () => {
+        try {
+            const profileRes = await GetUserProfile();
+            setUserId(profileRes.ID); // เก็บ userId ของผู้ใช้ที่ล็อกอิน
+        } catch (error) {
+            messageApi.open({
+                type: "error",
+                content: "เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์ผู้ใช้",
+            });
+        }
+    };
+
+    // ฟังก์ชันดึงข้อมูล postworks
     const getPostworks = async () => {
         let res = await GetPostwork();
         if (res.status === 200) {
-            setPostworks(res.data);
+            const allPostworks = res.data;
+            if (userId) {
+                // กรองเฉพาะ postworks ของผู้ใช้ที่ล็อกอิน
+                const userPostworks = allPostworks.filter(
+                    (postwork: PostworkInterface) => postwork.id_user === userId
+                );
+                setPostworks(userPostworks);
+            } else {
+                setPostworks([]);
+            }
         } else {
             setPostworks([]);
             messageApi.open({
@@ -81,15 +105,18 @@ function Postwork() {
     };
 
     useEffect(() => {
-        getPostworks();
-    }, []);
+        // เรียก fetchUserProfile เพื่อดึง userId ก่อน แล้วจึงเรียก getPostworks
+        fetchUserProfile().then(() => {
+            getPostworks();
+        });
+    }, [userId]); // ดัก userId เพื่อดึงข้อมูลเมื่อ userId เปลี่ยน
 
     return (
         <>
             {contextHolder}
             <Row>
                 <Col span={12}>
-                    <h2>รายการ Postwork</h2>
+                    <h2>รายการ Postwork ของคุณ</h2>
                 </Col>
             </Row>
             <Divider />
