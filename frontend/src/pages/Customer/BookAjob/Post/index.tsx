@@ -26,12 +26,12 @@ function Postwork() {
             key: "id_work",
         },
         {
-            title: "ชื่อผู้ใช้",
+            title: "ชื่อผู้โพส",
             key: "user_first_name",
             render: (record) => <>{record?.User?.first_name}</>,
         },
         {
-            title: "นามสกุลผู้ใช้",
+            title: "นามสกุลโพส",
             key: "user_last_name",
             render: (record) => <>{record?.User?.last_name}</>,
         },

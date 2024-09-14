@@ -1,16 +1,19 @@
 package booking
 
 import (
-    "math/rand"
-    "net/http"
-    "time"
+	"math/rand"
+	"net/http"
+	"time"
 	// "gorm.io/gorm"
-    "github.com/gin-gonic/gin"
-    "example.com/sa-67-example/config"
-    "example.com/sa-67-example/entity"
+	"example.com/sa-67-example/config"
+	"example.com/sa-67-example/entity"
+	"fmt"
+	"github.com/gin-gonic/gin"
 )
+
 const letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const numberBytes = "0123456789"
+
 // GenerateRandomBookingID generates a unique BookingID with 2 random letters and 3 random digits
 func GenerateRandomBookingID() string {
 	rand.Seed(time.Now().UnixNano())
@@ -78,29 +81,6 @@ func GetBookingsByWorkID(c *gin.Context) {
 	c.JSON(http.StatusOK, bookings)
 }
 
-// Create handles the creation of a new booking entity
-func Update(c *gin.Context) {
-	ID := c.Param("id")
-	var existingBooking entity.Booking
-
-	db := config.DB()
-	if err := db.First(&existingBooking, ID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
-
-	var updatedBooking entity.Booking
-	if err := c.ShouldBindJSON(&updatedBooking); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Update only the fields that are provided in the request
-	db.Model(&existingBooking).Updates(updatedBooking)
-
-	c.JSON(http.StatusOK, gin.H{"message": "Booking updated successfully", "data": existingBooking})
-}
-
 // Delete handles deleting a specific booking entity by ID
 func Delete(c *gin.Context) {
 	ID := c.Param("id")
@@ -115,16 +95,16 @@ func Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Booking deleted successfully"})
 }
 func GetAllBookings(c *gin.Context) {
-    var bookings []entity.Booking
-    db := config.DB()
-    results := db.Find(&bookings)
+	var bookings []entity.Booking
+	db := config.DB()
+	results := db.Find(&bookings)
 
-    if results.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": results.Error.Error()})
-        return
-    }
+	if results.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": results.Error.Error()})
+		return
+	}
 
-    c.JSON(http.StatusOK, bookings)
+	c.JSON(http.StatusOK, bookings)
 }
 
 // func CreateBookingFromPostwork(c *gin.Context) {
@@ -159,17 +139,47 @@ func GetAllBookings(c *gin.Context) {
 // }
 
 func CreateBookingFromPostwork(c *gin.Context) {
-    var booking entity.Booking
-    if err := c.ShouldBindJSON(&booking); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	var booking entity.Booking
+	if err := c.ShouldBindJSON(&booking); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    // Save the submission to the database
-    if err := config.DB().Create(&booking).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create submission"})
-        return
-    }
+	// Save the submission to the database
+	if err := config.DB().Create(&booking).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create submission"})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{"message": "Submission created successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Submission created successfully"})
 }
+func UpdateBookingStatus(c *gin.Context) {
+	bookingID := c.Param("id")
+	var booking entity.Booking
+	var input struct {
+		Status string `json:"status"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		fmt.Printf("Binding error: %v\n", err) // Debugging line
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	// Debugging line
+	fmt.Printf("Received status: %s\n", input.Status)
+
+	if err := config.DB().Where("id = ?", bookingID).First(&booking).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Booking not found"})
+		return
+	}
+
+	booking.Status = input.Status
+	if err := config.DB().Save(&booking).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update booking status"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Booking status updated successfully"})
+}
+
+

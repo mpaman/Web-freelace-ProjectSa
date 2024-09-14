@@ -116,12 +116,7 @@ async function DeletePostworkById(id: string) {
         .then((res) => res)
         .catch((e) => e.response);
 }
-async function UpdateWorkById(id: string, data: WorkInterface) {
-    return await axios
-        .put(`${apiUrl}/work/${id}`, data, requestOptions)
-        .then((res) => res)
-        .catch((e) => e.response);
-}
+
 async function DeleteWorkById(id: string) {
     return await axios
         .delete(`${apiUrl}/work/${id}`, requestOptions)
@@ -147,27 +142,14 @@ async function CreateBooking(data: BookingInterface) {
 }
 
 
-async function AcceptBooking(bookingId: string) {
-    return await axios
-        .put(`${apiUrl}/bookings/${bookingId}/accept`, {}, requestOptions)
-        .then((res) => res)
-        .catch((e) => e.response);
-}
 
-// Reject a booking
-async function RejectBooking(bookingId: string) {
-    return await axios
-        .put(`${apiUrl}/bookings/${bookingId}/reject`, {}, requestOptions)
-        .then((res) => res)
-        .catch((e) => e.response);
-}
+
 async function GetSubmissions() {
     return await axios
         .get(`${apiUrl}/submissions`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
-
 export const GetSubmissionsByWorkID = async (workID: string) => {
     return await axios
         .get(`${apiUrl}/works/${workID}/submissions`, requestOptions)
@@ -175,9 +157,26 @@ export const GetSubmissionsByWorkID = async (workID: string) => {
         .catch((e) => e.response);
 }
 
+async function UpdateWorkById(id: string, data: WorkInterface) {
+    return await axios
+        .put(`${apiUrl}/work/${id}`, data, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+async function UpdateBookingStatus(bookingId: number, status: string) {
+    return await axios
+        .put(`${apiUrl}/works/bookings/${bookingId}`, { status }, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+
+
 export {
     SignIn,
     GetSubmissions,
+    UpdateBookingStatus,
     GetUsers,
     UpdateUsersById,
     DeleteUsersById,
@@ -190,8 +189,6 @@ export {
     CreateWork,
     GetPostwork,
     GetPostworkById,
-    AcceptBooking,
-    RejectBooking,
     DeletePostworkById,
     CreateBooking,
     

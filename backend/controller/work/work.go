@@ -134,7 +134,6 @@ func Update(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
-
     // Update only the fields that are provided in the request
     db.Model(&existingWork).Updates(updatedWork)
 
