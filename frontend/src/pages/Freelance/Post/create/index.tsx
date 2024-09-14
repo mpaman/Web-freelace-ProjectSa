@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Input, Typography, Space, Button, Form, message, Avatar, InputNumber } from "antd";
 import { GetWorkById, UpdateWorkById, CreateWork, GetUserProfile } from "../../../../services/https/index";
-
+import videoBg from "../../../../assets/back.mp4";
 const { Text } = Typography;
 
 export default function PostEdit() {
@@ -14,11 +14,17 @@ export default function PostEdit() {
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
 
-    // Function to fetch user profile
+    useEffect(() => {
+        fetchUserProfile();
+        if (id) {
+            getWorkById(id);
+        }
+    }, [id]);
+
     const fetchUserProfile = async () => {
         try {
             const profileRes = await GetUserProfile();
-            setProfileImage(profileRes.Profile || '');
+            setProfileImage(profileRes.Profile || "");
             setFirstName(profileRes.FirstName || "No first name");
             setLastName(profileRes.LastName || "No last name");
         } catch (error) {
@@ -29,16 +35,15 @@ export default function PostEdit() {
         }
     };
 
-    // Function to fetch work data by ID
     const getWorkById = async (id: string) => {
         try {
             let res = await GetWorkById(id);
             if (res.status === 200) {
                 form.setFieldsValue({
-                    info: res.data.Info,
-                    wages: res.data.Wages,
-                    category: res.data.Category,
-                    contact: res.data.Contact,
+                    Info: res.data.Info,
+                    Wages: res.data.Wages,
+                    Category: res.data.Category,
+                    Contact: res.data.Contact,
                 });
             } else {
                 messageApi.open({
@@ -57,35 +62,34 @@ export default function PostEdit() {
         }
     };
 
-    // Effect hook to fetch profile and work data
-    useEffect(() => {
-        fetchUserProfile();
-        if (id) {
-            getWorkById(id);
-        }
-    }, [id]);
-
-    // Function to generate random WorkID
     const generateRandomWorkID = () => {
         const letters = Math.random().toString(36).substring(2, 4).toUpperCase();
         const digits = Math.floor(100 + Math.random() * 900);
         return `${letters}${digits}`;
     };
 
-    // Function to handle form submission
+    const validateContact = (rule: any, value: string) => {
+        const urlPattern = /^https?:\/\//;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phonePattern = /^0\d{9}$/;
+
+        if (!value) {
+            return Promise.reject(new Error("กรุณากรอกข้อมูลติดต่อ"));
+        }
+
+        if (urlPattern.test(value)) return Promise.resolve();
+        if (emailPattern.test(value) && value.includes("@gmail.com")) return Promise.resolve();
+        if (phonePattern.test(value)) return Promise.resolve();
+
+        return Promise.reject(new Error("กรุณากรอก URL, อีเมล (@gmail.com) หรือเบอร์โทรให้ถูกต้อง"));
+    };
+
     const onFinish = async (values: any) => {
-        let payload = {
-            ...values,
-            WorkID: id ? undefined : generateRandomWorkID(),
-        };
+        let payload = { ...values, WorkID: id ? undefined : generateRandomWorkID() };
 
         let res;
         try {
-            if (id) {
-                res = await UpdateWorkById(id, payload);
-            } else {
-                res = await CreateWork(payload);
-            }
+            res = id ? await UpdateWorkById(id, payload) : await CreateWork(payload);
 
             if (res.status === 200 || res.status === 201) {
                 messageApi.open({
@@ -110,97 +114,75 @@ export default function PostEdit() {
     };
 
     return (
-        <div>
+        <div style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: 'rgba(240, 242, 245, 0.6)' }}>
             {contextHolder}
-            <Row justify="center" style={{ marginTop: '40px' }}>
-            </Row>
-            <Row gutter={[16, 16]}>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                    <h1>{id ? "EDIT WORK" : "CREATE WORK"}</h1>
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Space direction="vertical" size={30} style={{ textAlign: 'center' }}>
-                        {profileImage ? (
-                            <Avatar shape="square" size={200} src={profileImage} />
-                        ) : (
-                            <Avatar shape="square" size={200} style={{ backgroundColor: '#ccc' }}>No Image</Avatar>
-                        )}
-                        <Text>{firstName} {lastName}</Text>
-                    </Space>
-                </Col>
-                <div style={{ padding: '20px', maxWidth: '1200px', margin: 'auto' }}>
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={onFinish}
-                    >
-                        <Row gutter={[200, 16]} justify="center">
-                            <Col span={24} md={12}>
-                                <Form.Item
-                                    label="รายละเอียดงาน"
-                                    name="info"
-                                    rules={[{ required: true, message: 'กรุณากรอกข้อความเพิ่มเติมที่นี่' }]}
-                                >
-                                    <Input.TextArea
-                                        placeholder="กรุณากรอกข้อความเพิ่มเติมที่นี่"
-                                        style={{ width: '100%', height: '300px', boxSizing: 'border-box' }}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24} md={12}>
-                                <Space direction="vertical" style={{ width: '100%' }} size="large">
-                                    <Form.Item
-                                        label="ค่าจ้าง"
-                                        name="wages"
-                                        rules={[{ required: true, message: 'กรุณากรอกค่าจ้าง' }]}
-                                    >
-                                        <InputNumber min={0} max={10000000}
-                                            placeholder="กรุณากรอกค่าจ้าง"
-                                            style={{ width: '100%', maxWidth: '300px', height: '40px' }}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        label="หมวดหมู่"
-                                        name="category"
-                                        rules={[{ required: true, message: 'กรุณากรอกหมวดหมู่' }]}
-                                    >
-                                        <Input
-                                            placeholder="กรุณากรอกหมวดหมู่"
-                                            style={{ width: '100%', maxWidth: '300px', height: '40px' }}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        label="อีเมล"
-                                        name="contact"
-                                        rules={[{ required: true, message: 'กรุณากรอกอีเมลของคุณ' }]}
-                                    >
-                                        <Input
-                                            placeholder="กรุณากรอกอีเมลของคุณ"
-                                            style={{ width: '100%', maxWidth: '300px', height: '40px' }}
-                                        />
-                                    </Form.Item>
-                                </Space>
-                            </Col>
-                        </Row>
-                        <Form.Item>
-                            <div style={{ textAlign: 'center' }}>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    block
-                                    style={{
-                                        height: '50px',
-                                        maxWidth: '100px',
-                                    }}
-                                >
-                                    {id ? 'แก้ไขข้อมูล' : 'บันทึกข้อมูล'}
-                                </Button>
-                            </div>
+
+            {/* Background video */}
+            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: -1, overflow: "hidden" }}>
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: -1, filter: "brightness(0.6)" }}
+                >
+                    <source src={videoBg} type="video/mp4" />
+                </video>
+            </div>
+
+            <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "800px", padding: "20px", background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)" }}>
+                <Row justify="center" style={{ marginBottom: "20px" }}>
+                </Row>
+
+                <Row justify="center" style={{ marginBottom: "20px" }}>
+                    <Col>
+                        <h1 style={{ textAlign: "center" }}>{id ? "EDIT WORK" : "CREATE WORK"}</h1>
+                    </Col>
+                </Row>
+
+                <Row justify="center" style={{ marginBottom: "20px" }}>
+                    <Col style={{ textAlign: "center" }}>
+                        <Space direction="vertical" size={30}>
+                            {profileImage ? (
+                                <Avatar shape="square" size={200} src={profileImage} />
+                            ) : (
+                                <Avatar shape="square" size={200} style={{ backgroundColor: "#ccc" }}>No Image</Avatar>
+                            )}
+                            <Text>{firstName} {lastName}</Text>
+                        </Space>
+                    </Col>
+                </Row>
+
+                <Form form={form} layout="vertical" onFinish={onFinish}>
+                    <Form.Item label="รายละเอียดงาน" name="Info" rules={[{ required: true, message: "กรุณากรอกข้อมูลเพิ่มเติม" }]}>
+                        <Input.TextArea
+                            placeholder="กรุณากรอกข้อมูล"
+                            style={{ width: "100%", height: "200px", borderRadius: "8px", padding: "12px", border: "1px solid #d9d9d9" }}
+                        />
+                    </Form.Item>
+
+                    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                        <Form.Item label="ค่าจ้าง" name="Wages" rules={[{ required: true, message: "กรุณากรอกค่าจ้าง" }]}>
+                            <InputNumber min={0} max={10000000} placeholder="กรุณากรอกค่าจ้าง" style={{ width: "100%", height: "40px", borderRadius: "8px" }} />
                         </Form.Item>
-                    </Form>
-                </div>
-            </Row>
+
+                        <Form.Item label="หมวดหมู่" name="Category" rules={[{ required: true, message: "กรุณากรอกหมวดหมู่" }]}>
+                            <Input placeholder="กรุณากรอกหมวดหมู่" style={{ width: "100%", height: "40px", borderRadius: "8px" }} />
+                        </Form.Item>
+
+                        <Form.Item label="เบอร์โทร / อีเมล / ลิงก์" name="Contact" rules={[{ validator: validateContact }]}>
+                            <Input placeholder="กรุณากรอกข้อมูลติดต่อ" style={{ width: "100%", height: "40px", borderRadius: "8px" }} />
+                        </Form.Item>
+                    </Space>
+
+                    <Form.Item>
+                        <div style={{ textAlign: "center" }}>
+                            <Button type="primary" htmlType="submit" size="large" style={{ width: "150px", height: "50px", borderRadius: "8px" }}>
+                                {id ? "แก้ไขข้อมูล" : "บันทึกข้อมูล"}
+                            </Button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </div>
         </div>
     );
 }
