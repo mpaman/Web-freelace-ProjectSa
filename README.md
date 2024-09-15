@@ -20,3 +20,17 @@ npm instal axios --save
 npm instal dayjs --save
 
 npm run dev
+
+
+
+--------------------------------------------------------------------------------------------------------
+backend ใช้
+$ go get -u github.com/gin-gonic/gin
+
+$ go get -u gorm.io/gorm
+
+$ go get -u gorm.io/driver/sqlite
+
+$ go get -u github.com/dgrijalva/jwt-go
+
+$ go get -u golang.org/x/crypto@v0.16.0
