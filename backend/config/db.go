@@ -51,6 +51,8 @@ func SetupDatabase() {
 		&entity.Booking{},
 		
 		&entity.Submission{},
+
+		&entity.Profile{},
 	)
 
 	GenderMale := entity.Genders{Gender: "Male"}

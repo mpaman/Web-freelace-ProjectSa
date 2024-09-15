@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Avatar, Space, Carousel, message } from 'antd';
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Card, Avatar, Space, Carousel, message, Typography, Row, Col, Divider } from 'antd';
+import { UserOutlined, PhoneOutlined, MoneyCollectOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from 'react-router-dom';
-import { GetPostworkById,GetUserProfile} from "../../../../services/https/index";
+import { GetPostworkById, GetUserProfile } from "../../../../services/https/index";
 import axios from 'axios';
+
+const { Title, Paragraph } = Typography;
 
 const PostPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
@@ -26,7 +28,7 @@ const PostPage: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchUserProfile()
+        fetchUserProfile();
         const fetchPostwork = async () => {
             try {
                 const res = await GetPostworkById(postId);
@@ -63,13 +65,10 @@ const PostPage: React.FC = () => {
             const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
             if (res.status === 200) {
                 if (res.data.redirect) {
-                    // ถ้าสถานะการจองเป็น accepted จะ redirect ไปยังหน้าถัดไป
                     message.success("Booking already accepted, proceeding to the next page.");
                     navigate(`/post/${postId}/sent`);
                 } else {
-                    // แสดงข้อความว่าการจองสำเร็จ แต่ไม่ Redirect
                     message.success("Booking successful!");
-                    // ไม่ต้อง redirect ไปหน้าถัดไป เพื่อให้ผู้ใช้สามารถอยู่ที่หน้านี้
                 }
             }
         } catch (error) {
@@ -84,9 +83,6 @@ const PostPage: React.FC = () => {
             }
         }
     };
-    
-
-
 
     if (loading) {
         return <div>Loading...</div>;
@@ -97,37 +93,53 @@ const PostPage: React.FC = () => {
             {contextHolder}
             <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ width: '60%' }}>
-                    <Card style={{ width: '90%', height: '600px', overflowY: 'auto' }}>
-                        <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
+                    <Card style={{ width: '100%', height: '600px', overflowY: 'auto' }}>
+                        <Paragraph style={{ whiteSpace: 'pre-wrap' }}>
+                            <FileTextOutlined style={{ marginRight: '8px' }} />
                             {postwork?.Work?.info || 'No info'}
-                        </div>
+                        </Paragraph>
                     </Card>
                 </div>
 
-                <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <Space wrap size={16}>
-                        <Avatar size="large" icon={<UserOutlined />} />
-                        {postwork?.User?.first_name} {postwork?.User?.last_name}
-                    </Space>
+                <div style={{ width: '35%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Card style={{ marginBottom: '20px' }}>
+                        <Space size="large" align="center" style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Avatar size={100} src={postwork?.User?.Profile || undefined} icon={<UserOutlined />} />
+                            <Typography.Text strong>
+                                {postwork?.User?.first_name} {postwork?.User?.last_name}
+                            </Typography.Text>
+                        </Space>
+                    </Card>
 
-                    <Card style={{ width: '50%', height: '200px', overflowY: 'auto', marginTop: '20px' }}>
-                        <div style={{ marginTop: '10px', fontWeight: 'bold', textAlign: 'center' }}>
-                            ติดต่อ: {postwork?.Work?.contact || 'No Contact Information'}
-                            <br />
-                            ค่าจ้าง: {postwork?.Work?.wages || 'No Wages Information'} บาท
+                    <Card style={{ height: '300px', overflowY: 'auto' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <Title level={4}>
+                                <PhoneOutlined /> Contact
+                            </Title>
+                            <Paragraph>
+                                {postwork?.Work?.contact || 'No Contact Information'}
+                            </Paragraph>
+                            <Divider />
+                            <Title level={4}>
+                                <MoneyCollectOutlined /> Wages
+                            </Title>
+                            <Paragraph>
+                                {postwork?.Work?.wages || 'No Wages Information'} บาท
+                            </Paragraph>
                         </div>
                     </Card>
 
                     <div style={{
                         position: 'fixed',
                         bottom: '70px',
-                        right: '150px',
+                        right: '30px',
                         zIndex: 1000,
                         backgroundColor: '#fff',
                         padding: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '8px'
                     }}>
-                        <Button type="primary" onClick={handleBookJob}>Book Job</Button>
+                        <Button type="primary" size="large" onClick={handleBookJob}>Book Job</Button>
                     </div>
                 </div>
             </div>

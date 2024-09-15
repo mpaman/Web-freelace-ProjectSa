@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import { Avatar, Space, Button, message, Breadcrumb, Layout ,} from "antd";
-import { UserOutlined, HomeOutlined, PlusOutlined,BellOutlined,BookOutlined} from "@ant-design/icons";
+import { Avatar, Space, Button, message, Breadcrumb, Layout, } from "antd";
+import { UserOutlined, HomeOutlined, PlusOutlined, BellOutlined, BookOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.png";
 import Dashboard from "../../pages/Customer/BookAjob/Home";
 import Post from "../../pages/Customer/BookAjob/Post";
@@ -23,9 +23,11 @@ import ExperienceEdit from "../../pages/Resume/edit/experience";
 import SkillEdit from "../../pages/Resume/edit/skill";
 import Booking from "../../pages/Customer/BookAjob/Bookingwork";
 
+import Customer from "../../pages/Customer/Profile/index";
+// import CustomerCreate from "../../pages/Customer/BookAjob/customer/create";
+import CustomerEdit from "../../pages/Customer/Profile/edit/index";
+import ProfileCustomer from "../../pages/Customer/Profile/profile/index";
 
-// import Promiss from "../../pages/Customer/BookAjob/Promiss";
-// import Getmon from "../../pages/Customer/BookAjob/Getmoney";
 
 const { Header, Content, Footer } = Layout;
 
@@ -85,11 +87,22 @@ const FullLayout: React.FC = () => {
                             </Link>
                         </Button>
 
-                        <Space wrap size={16}>
-                            <Link to="/ProfileFreelance">
-                                <Avatar size="large" icon={<UserOutlined />} />
-                            </Link>
-                        </Space>
+
+
+
+                        <Link to="/customer">  {/* ลิงก์ไปยังหน้าโปรไฟล์ */}
+                            <Avatar
+                                style={{
+                                    backgroundColor: '#1890ff',
+                                    marginLeft: '20px',
+                                    cursor: 'pointer'
+                                }}
+                                icon={<UserOutlined />}
+                            />
+                        </Link>
+
+
+
 
                         <Button type="primary" onClick={Logout} style={{ marginLeft: '20px' }}>
                             ออกจากระบบ
@@ -101,8 +114,11 @@ const FullLayout: React.FC = () => {
                     <Breadcrumb style={{ margin: "16px 0" }} />
                     <div style={{ padding: 24, minHeight: "100%", background: '#f0f2f5' }}>
                         <Routes>
-                            {/* <Route path="/getmon" element={<Getmon />} /> */}
-                            {/* <Route path="/promiss" element={<Promiss />} /> */}
+
+                            <Route path="/customer" element={<Customer />} />
+                            {/* <Route path="/customer/create" element={<CustomerCreate />} /> */}
+                            <Route path="/customer/edit/:id" element={<CustomerEdit />} />
+                            <Route path="/customer/profile/:id" element={<ProfileCustomer />} />
 
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/post/:postId" element={<Inpost />} />

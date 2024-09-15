@@ -12,6 +12,7 @@ import (
 	"example.com/sa-67-example/controller/users"
 	"example.com/sa-67-example/controller/work"
 	"github.com/gin-gonic/gin"
+
 )
 
 const PORT = "8000"
@@ -64,6 +65,7 @@ func main() {
     authorized.GET("/booking/:id", booking.Get)
 
     authorized.DELETE("/booking/:id", booking.Delete)
+
 
     r.GET("/", func(c *gin.Context) {
         c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)

@@ -37,6 +37,15 @@ const Getwork = Loadable(lazy(() => import("../pages/Customer/BookAjob/Getwork")
 
 const Booking = Loadable(lazy(() => import("../pages/Customer/BookAjob/Bookingwork")));
 
+
+const Customer = Loadable(lazy(() => import("../pages/Customer/Profile/index")));
+
+const EditCustomer = Loadable(lazy(() => import("../pages/Customer/Profile/edit/index")));
+
+const ProfileCustomer = Loadable(lazy(() => import("../pages/Customer/Profile/profile/index")));
+
+
+
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
         path: "/",
@@ -141,6 +150,40 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 element: <Inpost />,
             },
             {
+
+                path: "/customer",
+
+                children: [
+
+                    {
+
+                        path: "/customer",
+
+                        element: <Customer />,
+
+                    },
+
+                    {
+
+                        path: "/customer/edit/:id",
+
+                        element: <EditCustomer />,
+
+                    },
+
+                    {
+
+                        path: "/customer/profile/:id",
+
+                        element: <ProfileCustomer />,
+
+                    },
+
+                ],
+
+            },
+
+            {
                 path: "work",
                 children: [
                     {
@@ -157,6 +200,10 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     },
                 ],
             },
+
+
+
+
         ],
     };
 };

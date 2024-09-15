@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, message, Input } from 'antd';
+import { Button, Card, message, Input, Typography, Space } from 'antd';
+import { FileOutlined, PhoneOutlined, MoneyCollectOutlined, UploadOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetPostworkById,GetUserProfile} from '../../../../services/https/index';
+import { GetPostworkById, GetUserProfile } from '../../../../services/https/index';
 import axios from 'axios';
 
 const { TextArea } = Input;
+const { Title, Paragraph } = Typography;
 
 const Sent: React.FC = () => {
     const navigate = useNavigate();
@@ -26,9 +28,9 @@ const Sent: React.FC = () => {
             });
         }
     };
-    // Fetch postwork details
+
     useEffect(() => {
-        fetchUserProfile()
+        fetchUserProfile();
         const fetchPostwork = async () => {
             try {
                 const res = await GetPostworkById(postId);
@@ -52,12 +54,9 @@ const Sent: React.FC = () => {
 
         fetchPostwork();
     }, [postId, messageApi]);
-    
 
-    
-    // Handle submission
     const handleAccept = async () => {
-        if (bookerUserId) {
+        if (bookerUserId && fileLink) {
             try {
                 const submissionPayload = {
                     work_id: postwork?.Work?.ID,
@@ -66,19 +65,15 @@ const Sent: React.FC = () => {
                     file_link: fileLink,
                 };
     
-                console.log("Payload:", submissionPayload);
-    
                 const res = await axios.post(`http://localhost:8000/postwork/${postId}/sent`, submissionPayload);
-    
-                console.log("Response from API:", res);
     
                 if (res.status === 200) {
                     message.success("Submission successful!");
+                    navigate(`/post/${postId}`);
                 } else {
                     message.error("Submission failed");
                 }
             } catch (error) {
-                console.error("Error from API:", error);
                 message.error("Error creating submission");
             }
         } else {
@@ -91,33 +86,46 @@ const Sent: React.FC = () => {
     }
 
     return (
-        <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ width: '60%' }}>
                 {/* Job Details */}
-                <Card style={{ width: '90%', height: '600px', overflowY: 'auto' }}>
-                    <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
+                <Card style={{ width: '100%', height: 'auto', marginBottom: '20px', overflowY: 'auto' }}>
+                    <Title level={3} style={{ textAlign: 'center', marginBottom: '10px' }}>
+                        Job Details
+                    </Title>
+                    <Paragraph style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+                        <FileOutlined style={{ marginRight: '8px' }} />
                         {postwork?.Work?.info || 'No job details available'}
-                    </div>
+                    </Paragraph>
                 </Card>
 
                 {/* Contact and Wages Details */}
-                <Card style={{ width: '90%', height: '100px', overflowY: 'auto' }}>
-                    <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
+                <Card style={{ width: '100%', height: 'auto', overflowY: 'auto' }}>
+                    <Title level={4} style={{ textAlign: 'center', marginBottom: '10px' }}>
+                        Contact & Wages
+                    </Title>
+                    <Paragraph style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+                        <PhoneOutlined style={{ marginRight: '8px' }} />
                         ติดต่อ: {postwork?.Work?.contact || 'No contact information available'}
                         <br />
+                        <MoneyCollectOutlined style={{ marginRight: '8px' }} />
                         ค่าจ้าง: {postwork?.Work?.wages || 'No wage information available'} บาท
-                    </div>
+                    </Paragraph>
                 </Card>
             </div>
 
-            <div style={{ width: '30%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ width: '35%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 {/* File Link Input Section */}
                 <div style={{ marginBottom: '20px' }}>
+                    <Title level={4} style={{ marginBottom: '10px' }}>
+                        Upload File Link
+                    </Title>
                     <TextArea
                         rows={4}
                         placeholder="ใส่ลิงก์ไฟล์ที่นี่"
                         value={fileLink || ''}
                         onChange={(e) => setFileLink(e.target.value)}
+                        prefix={<UploadOutlined />}
                     />
                 </div>
 
@@ -125,10 +133,14 @@ const Sent: React.FC = () => {
                 <div style={{
                     position: 'fixed',
                     bottom: '70px',
-                    right: '150px',
+                    right: '30px',
                     zIndex: 1000,
+                    backgroundColor: '#fff',
+                    padding: '10px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    borderRadius: '8px'
                 }}>
-                    <Button type="primary" style={{ width: '100px' }} onClick={handleAccept}>
+                    <Button type="primary" size="large" onClick={handleAccept} style={{ width: '100%' }}>
                         ส่งงาน
                     </Button>
                 </div>
