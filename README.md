@@ -19,6 +19,8 @@ npm instal axios --save
 
 npm instal dayjs --save
 
+npm install antd-img-crop
+
 npm run dev
 
 
