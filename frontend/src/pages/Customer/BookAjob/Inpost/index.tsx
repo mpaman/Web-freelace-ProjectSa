@@ -97,18 +97,11 @@ const PostPage: React.FC = () => {
             {contextHolder}
             <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ width: '60%' }}>
-                    <Card style={{ width: '90%', height: '80px', overflowY: 'auto' }}>
+                    <Card style={{ width: '90%', height: '600px', overflowY: 'auto' }}>
                         <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
                             {postwork?.Work?.info || 'No info'}
                         </div>
                     </Card>
-                    <Carousel autoplay style={{ width: '90%', height: '600px', overflowY: 'auto' }}>
-                        {postwork?.Work?.images?.map((image: string, index: number) => (
-                            <div key={index}>
-                                <img src={image} alt={`Slide ${index + 1}`} style={{ width: '100%', height: '100%' }} />
-                            </div>
-                        ))}
-                    </Carousel>
                 </div>
 
                 <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -121,7 +114,7 @@ const PostPage: React.FC = () => {
                         <div style={{ marginTop: '10px', fontWeight: 'bold', textAlign: 'center' }}>
                             ติดต่อ: {postwork?.Work?.contact || 'No Contact Information'}
                             <br />
-                            ค่าจ้าง: {postwork?.Work?.wages || 'No Wages Information'}
+                            ค่าจ้าง: {postwork?.Work?.wages || 'No Wages Information'} บาท
                         </div>
                     </Card>
 

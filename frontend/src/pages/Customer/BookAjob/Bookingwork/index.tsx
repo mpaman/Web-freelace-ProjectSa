@@ -22,14 +22,14 @@ function Bookingwork() {
             key: "work_id",
         },
         {
-            title: "info",
+            title: "รายระเอียดงาน",
             key: "info",
             render: (record) => works[record.work_id]?.info || 'No info',
         },
         {
-            title: "ค่าจ้าง",
+            title: "ค่าจ้าง (บาท)",
             key: "wages",
-            render: (record) => works[record.work_id]?.wages || 'No wages information',
+            render: (record) => works[record.work_id] ?.wages|| 'No wages information'  ,
         },
         {
             title: "ข้อมูลการติดต่อ",

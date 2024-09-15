@@ -3,6 +3,7 @@ import { Col, Row, Divider, message, Input, Typography, Select, Avatar } from "a
 import { GetPostwork } from "../../../../services/https/index";
 import { PostworkInterface } from "../../../../interfaces/Postwork";
 import { useNavigate } from "react-router-dom";
+import videoBg from "../../assets/back.mp4"; // Background video
 
 const { Search } = Input;
 const { Option } = Select;

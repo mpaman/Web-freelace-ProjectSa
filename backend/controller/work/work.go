@@ -142,28 +142,42 @@ func Update(c *gin.Context) {
 
 // Delete handles deleting a specific work entity by ID
 func Delete(c *gin.Context) {
-    ID := c.Param("id")
+    ID := c.Param("id") // รับค่า ID ของ work ที่ต้องการลบ
 
     db := config.DB()
 
     // Start a transaction
     tx := db.Begin()
 
-    // Delete associated Postwork entries
+    // ลบ Booking ที่เชื่อมกับ Work ผ่าน work_id
+    if err := tx.Where("work_id = ?", ID).Delete(&entity.Booking{}).Error; err != nil {
+        tx.Rollback() // Rollback เมื่อเกิดข้อผิดพลาด
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Booking entries"})
+        return
+    }
+
+    // ลบ Submission ที่เชื่อมกับ Work ผ่าน work_id
+    if err := tx.Where("work_id = ?", ID).Delete(&entity.Submission{}).Error; err != nil {
+        tx.Rollback() // Rollback เมื่อเกิดข้อผิดพลาด
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Submission entries"})
+        return
+    }
+
+    // ลบ Postwork ที่เชื่อมกับ Work ผ่าน idwork (เหมือนเดิม)
     if err := tx.Where("idwork = ?", ID).Delete(&entity.Postwork{}).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete associated Postwork entries"})
         return
     }
 
-    // Delete the Work
+    // ลบ Work
     if err := tx.Delete(&entity.Work{}, ID).Error; err != nil {
         tx.Rollback()
         c.JSON(http.StatusNotFound, gin.H{"error": "Failed to delete work"})
         return
     }
 
-    // Commit the transaction
+    // Commit transaction ถ้าการลบสำเร็จ
     tx.Commit()
 
     c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})

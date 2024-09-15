@@ -1,9 +1,8 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import { Avatar, Space, Button, message, Breadcrumb, Layout } from "antd";
-import { UserOutlined, HomeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Avatar, Space, Button, message, Breadcrumb, Layout ,} from "antd";
+import { UserOutlined, HomeOutlined, PlusOutlined,BellOutlined,BookOutlined} from "@ant-design/icons";
 import logo from "../../assets/logo.png";
-
 import Dashboard from "../../pages/Customer/BookAjob/Home";
 import Post from "../../pages/Customer/BookAjob/Post";
 import Postwork from "../../pages/Freelance/Post";
@@ -60,8 +59,8 @@ const FullLayout: React.FC = () => {
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
                             <Link to="/works">
-                                <PlusOutlined style={{ color: 'white' }} />
-                                <span> โพสงาน</span>
+                                <BookOutlined style={{ color: 'white' }} />
+                                <span> ข้อมูลงานที่โพส</span>
                             </Link>
                         </Button>
 
@@ -74,31 +73,23 @@ const FullLayout: React.FC = () => {
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
                             <Link to="/work">
-                                <UserOutlined style={{ color: 'white' }} />
-                                <span> PostJob</span>
+                                <PlusOutlined style={{ color: 'white' }} />
+                                <span> โพสงาน</span>
                             </Link>
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
                             <Link to="/bookingbyF">
-                                <UserOutlined style={{ color: 'white' }} />
-                                <span> ติดตามงาน</span>
+                                <BellOutlined style={{ color: 'white' }} />
+                                <span> ติดตามการจอง</span>
                             </Link>
                         </Button>
-
-                        <Space wrap size={16}>
-                            <Link to="/ProfileCustomer">
-                                <Avatar size="large" icon={<UserOutlined />} />
-                            </Link>
-                        </Space>
-                        <p style={{ color: 'white', margin: '0 10px' }}>---Customer----</p>
 
                         <Space wrap size={16}>
                             <Link to="/ProfileFreelance">
                                 <Avatar size="large" icon={<UserOutlined />} />
                             </Link>
                         </Space>
-                        <p style={{ color: 'white', margin: '0 10px' }}>---Freelance----</p>
 
                         <Button type="primary" onClick={Logout} style={{ marginLeft: '20px' }}>
                             ออกจากระบบ

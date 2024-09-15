@@ -161,7 +161,7 @@ export default function PostEdit() {
                     </Form.Item>
 
                     <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                        <Form.Item label="ค่าจ้าง" name="Wages" rules={[{ required: true, message: "กรุณากรอกค่าจ้าง" }]}>
+                        <Form.Item label="ค่าจ้าง (บาท)" name="Wages" rules={[{ required: true, message: "กรุณากรอกค่าจ้าง" }]}>
                             <InputNumber min={0} max={10000000} placeholder="กรุณากรอกค่าจ้าง" style={{ width: "100%", height: "40px", borderRadius: "8px" }} />
                         </Form.Item>
 

@@ -37,7 +37,7 @@ function Postwork() {
             render: (record) => <>{record?.User?.last_name}</>,
         },
         {
-            title: "ชื่องาน",
+            title: "รายระเอียดงาน",
             key: "work_info",
             render: (record) => <>{record?.Work?.info}</>,
         },
@@ -47,9 +47,9 @@ function Postwork() {
             render: (record) => <>{record?.Work?.category}</>,
         },
         {
-            title: "ค่าจ้าง",
+            title: "ค่าจ้าง (บาท)",
             key: "work_wages",
-            render: (record) => <>{record?.Work?.wages}</>,
+            render: (record) => <>{record?.Work?.wages}  </>,
         },
         {
             title: "จัดการการจอง",

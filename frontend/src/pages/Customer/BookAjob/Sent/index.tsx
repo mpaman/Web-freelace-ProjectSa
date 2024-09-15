@@ -105,7 +105,7 @@ const Sent: React.FC = () => {
                     <div style={{ whiteSpace: 'pre-wrap', color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
                         ติดต่อ: {postwork?.Work?.contact || 'No contact information available'}
                         <br />
-                        ค่าจ้าง: {postwork?.Work?.wages || 'No wage information available'}
+                        ค่าจ้าง: {postwork?.Work?.wages || 'No wage information available'} บาท
                     </div>
                 </Card>
             </div>

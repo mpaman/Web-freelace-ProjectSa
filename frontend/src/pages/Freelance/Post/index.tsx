@@ -27,8 +27,8 @@ function Work() {
         },
         {
             title: "ลำดับ",
-            dataIndex: "work_id",
-            key: "work_id",
+            dataIndex: "ID",
+            key: "ID",
         },
         {
             title: "รายละเอียดงาน",

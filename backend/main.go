@@ -53,7 +53,6 @@ func main() {
     authorized.GET("/work/:id", work.Get)
 
     authorized.PUT("/work/:id", work.Update)
-
     authorized.DELETE("/work/:id", work.Delete)
 
     authorized.GET("/postworks", postwork.GetAll)
