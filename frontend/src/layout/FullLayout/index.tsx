@@ -12,22 +12,18 @@ import Inpost from "../../pages/Customer/BookAjob/Inpost";
 import Managebooking from "../../pages/Customer/BookAjob/managebooking";
 import Sent from "../../pages/Customer/BookAjob/Sent";
 import Getwork from "../../pages/Customer/BookAjob/Getwork";
-import ResumeList from "../../pages/Resume";
-import PersonalCreate from "../../pages/Resume/create/personal";
-import StudyCreate from "../../pages/Resume/create/study";
-import ExperienceCreate from "../../pages/Resume/create/experience";
-import SkillCreate from "../../pages/Resume/create/skill";
-import PersonalEdit from "../../pages/Resume/edit/personal";
-import StudyEdit from "../../pages/Resume/edit/study";
-import ExperienceEdit from "../../pages/Resume/edit/experience";
-import SkillEdit from "../../pages/Resume/edit/skill";
 import Booking from "../../pages/Customer/BookAjob/Bookingwork";
-
 import Customer from "../../pages/Customer/Profile/index";
-// import CustomerCreate from "../../pages/Customer/BookAjob/customer/create";
+
+
+//profile
 import CustomerEdit from "../../pages/Customer/Profile/edit/index";
 import ProfileCustomer from "../../pages/Customer/Profile/profile/index";
 
+//resume
+import Resume from "../../pages/Freelance/Resume";
+import ResumeEdit from "../../pages/Freelance/Resume/edit";
+import ResumeView from "../../pages/Freelance/Resume/view";
 
 const { Header, Content, Footer } = Layout;
 
@@ -67,10 +63,10 @@ const FullLayout: React.FC = () => {
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            {/* <Link to="/resume"> */}
-                            <UserOutlined style={{ color: 'white' }} />
-                            <span> Resume</span>
-                            {/* </Link> */}
+                            <Link to="/resume">
+                                <UserOutlined style={{ color: 'white' }} />
+                                <span> Resume</span>
+                            </Link>
                         </Button>
 
                         <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
@@ -135,16 +131,10 @@ const FullLayout: React.FC = () => {
                             <Route path="/work/create" element={<Creatework />} />
                             <Route path="/work/edit/:id" element={<Editwork />} />
 
+                            <Route path="/resume" element={<Resume />} />
+                            <Route path="/resume/edit/:id" element={<ResumeEdit />} />
+                            <Route path="/resume/view/:id" element={<ResumeView />} />
 
-                            <Route path="/resume" element={<ResumeList />} />
-                            <Route path="/resume/create/personal" element={<PersonalCreate />} />
-                            <Route path="/resume/create/study" element={<StudyCreate />} />
-                            <Route path="/resume/create/experience" element={<ExperienceCreate />} />
-                            <Route path="/resume/create/skill" element={<SkillCreate />} />
-                            <Route path="/resume/edit/personal" element={<PersonalEdit />} />
-                            <Route path="/resume/edit/study" element={<StudyEdit />} />
-                            <Route path="/resume/edit/experience" element={<ExperienceEdit />} />
-                            <Route path="/resume/edit/skill" element={<SkillEdit />} />
                         </Routes>
                     </div>
                 </Content>

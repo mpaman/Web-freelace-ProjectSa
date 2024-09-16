@@ -118,7 +118,6 @@ func SignUp(c *gin.Context) {
 
 		GenderID: payload.GenderID,
 
-
 		Category: payload.Category,
 
 		Wages: payload.Wages,
@@ -137,6 +136,21 @@ func SignUp(c *gin.Context) {
 		return
 
 	}
+
+	resume := entity.Resume{
+        PersonalID: user.ID, // ใช้ ID ของผู้ใช้เป็น PersonalID
+    }
+
+    if err := db.Create(&resume).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create resume"})
+        return
+    }
+
+	user.ResumeID = resume.ID
+    if err := db.Save(&user).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user with resume ID"})
+        return
+    }
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
 
@@ -197,6 +211,6 @@ func SignIn(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token_type": "Bearer", "token": signedToken, "id": user.ID})
+    c.JSON(http.StatusOK, gin.H{"token_type": "Bearer", "token": signedToken, "id": user.ID, "resume_id": user.ResumeID})
 
 }

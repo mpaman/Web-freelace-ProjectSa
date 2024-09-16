@@ -13,6 +13,8 @@ import (
 	"example.com/sa-67-example/controller/work"
 	"github.com/gin-gonic/gin"
 
+    "example.com/sa-67-example/controller/resume"
+
 )
 
 const PORT = "8000"
@@ -63,10 +65,16 @@ func main() {
 
     authorized.GET("/bookings", booking.GetAllBookings)
     authorized.GET("/booking/:id", booking.Get)
-
     authorized.DELETE("/booking/:id", booking.Delete)
 
 
+
+    authorized.POST("/resumes", resume.CreateResume)
+    authorized.GET("/resumes", resume.GetAllResume)
+    authorized.GET("/resumes/:id", resume.GetResume)
+    authorized.PUT("/resumes/:id", resume.UpdateResume)
+    authorized.DELETE("/resumes/:id", resume.DeleteResume)
+    
     r.GET("/", func(c *gin.Context) {
         c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
     })

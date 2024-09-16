@@ -255,7 +255,7 @@ function CustomerEdit() {
                 />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={24} md={12}>
+            {/* <Col xs={24} sm={24} md={12}>
               <Form.Item
                 label="ที่อยู่"
                 name="address"
@@ -328,7 +328,7 @@ function CustomerEdit() {
               >
                 <Input placeholder="รหัสไปรษณีย์" />
               </Form.Item>
-            </Col>    
+            </Col>     */}
 
             <Col xs={24} sm={24} md={12}>
               <Form.Item

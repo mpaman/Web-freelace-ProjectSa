@@ -32,4 +32,7 @@ type Users struct {
 	Contact string `json: "contact"`
 
 	Profile string `gorm:"type:longtext"`
+
+	ResumeID uint   `json:"resume_id"`
+	Resume   Resume `gorm:"foreignKey:ResumeID;references:ID" json:"resume"`
 }

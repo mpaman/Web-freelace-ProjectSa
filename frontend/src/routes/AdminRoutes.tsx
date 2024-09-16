@@ -7,18 +7,6 @@ import FullLayout from "../layout/FullLayout";
 const MainPages = Loadable(lazy(() => import("../pages/authentication/Login")));
 const Dashboard = Loadable(lazy(() => import("../pages/Customer/BookAjob/Home")));
 
-// Resume pages
-const ResumeList = Loadable(lazy(() => import("../pages/Resume")));
-const PersonalCreate = Loadable(lazy(() => import("../pages/Resume/create/personal")));
-const StudyCreate = Loadable(lazy(() => import("../pages/Resume/create/study")));
-const ExperienceCreate = Loadable(lazy(() => import("../pages/Resume/create/experience")));
-const SkillCreate = Loadable(lazy(() => import("../pages/Resume/create/skill")));
-
-// Edit Resume pages
-const PersonalEdit = Loadable(lazy(() => import("../pages/Resume/edit/personal")));
-const StudyEdit = Loadable(lazy(() => import("../pages/Resume/edit/study")));
-const ExperienceEdit = Loadable(lazy(() => import("../pages/Resume/edit/experience")));
-const SkillEdit = Loadable(lazy(() => import("../pages/Resume/edit/skill")));
 
 // Freelance pages
 const Post = Loadable(lazy(() => import("../pages/Customer/BookAjob/Post")));
@@ -44,7 +32,9 @@ const EditCustomer = Loadable(lazy(() => import("../pages/Customer/Profile/edit/
 
 const ProfileCustomer = Loadable(lazy(() => import("../pages/Customer/Profile/profile/index")));
 
-
+const Resume = Loadable(lazy(() => import("../pages/Freelance/Resume")));
+const EditResume = Loadable(lazy(() => import("../pages/Freelance/Resume/edit")));
+const ViewResume = Loadable(lazy(() => import("../pages/Freelance/Resume/view")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
@@ -54,57 +44,6 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
             {
                 path: "/",
                 element: <Dashboard />,
-            },
-            {
-                path: "resume",
-                children: [
-                    {
-                        path: "",
-                        element: <ResumeList />,
-                    },
-                    {
-                        path: "create",
-                        children: [
-                            {
-                                path: "personal",
-                                element: <PersonalCreate />,
-                            },
-                            {
-                                path: "study",
-                                element: <StudyCreate />,
-                            },
-                            {
-                                path: "experience",
-                                element: <ExperienceCreate />,
-                            },
-                            {
-                                path: "skill",
-                                element: <SkillCreate />,
-                            },
-                        ],
-                    },
-                    {
-                        path: "edit",
-                        children: [
-                            {
-                                path: "personal",
-                                element: <PersonalEdit />,
-                            },
-                            {
-                                path: "study",
-                                element: <StudyEdit />,
-                            },
-                            {
-                                path: "experience",
-                                element: <ExperienceEdit />,
-                            },
-                            {
-                                path: "skill",
-                                element: <SkillEdit />,
-                            },
-                        ],
-                    },
-                ],
             },
             {
                 path: "works",
@@ -200,7 +139,23 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                     },
                 ],
             },
-
+            {
+                path: "/resume",
+                children: [
+                    {
+                        path: "/resume",
+                        element: <Resume />,
+                    },
+                    {
+                        path: "/resume/edit/:id",
+                        element: <EditResume />,
+                    },
+                    {
+                        path: "/resume/view/:id",
+                        element: <ViewResume />,
+                    }
+                ],
+            },
 
 
 

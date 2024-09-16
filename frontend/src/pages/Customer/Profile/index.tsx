@@ -139,7 +139,7 @@ function UserProfile() {
                             <strong>เพศ:</strong> {user?.gender?.gender}
                         </p>
                     </Card>
-                    <Card
+                    {/* <Card
                         title="ที่อยู่"
                         bordered={false}
                         style={{
@@ -149,7 +149,7 @@ function UserProfile() {
                     >
                         <p>{user?.address} ต.{user?.subdistrict} อ.{user?.district} จ.{user?.province} {user?.postalcode}</p>
 
-                    </Card>
+                    </Card> */}
                     <Card
                         title="ข้อมูลติดต่อ"
                         bordered={false}

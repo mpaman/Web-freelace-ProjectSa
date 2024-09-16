@@ -53,6 +53,12 @@ func SetupDatabase() {
 		&entity.Submission{},
 
 		&entity.Profile{},
+
+		&entity.Personal{},
+		&entity.Study{},
+		&entity.Experience{},
+		&entity.Skill{},
+		&entity.Resume{},
 	)
 
 	GenderMale := entity.Genders{Gender: "Male"}

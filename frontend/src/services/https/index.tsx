@@ -4,6 +4,7 @@ import { SignInInterface } from '../../interfaces/SignIn';
 import { WorkInterface } from '../../interfaces/work';
 import { BookingInterface } from '../../interfaces/Booking';
 import { PostworkInterface } from "../../interfaces/Postwork";
+import { ResumeInterface } from "../../interfaces/IResume";
 
 const apiUrl = "http://localhost:8000";
 const Authorization = localStorage.getItem("token");
@@ -19,7 +20,11 @@ const requestOptions = {
 async function SignIn(data: SignInInterface) {
     return await axios
         .post(`${apiUrl}/signin`, data, requestOptions)
-        .then((res) => res)
+        .then((res) => {
+            // เก็บ resume_id ใน localStorage
+            localStorage.setItem("resume_id", res.data.resume_id);
+            return res;
+        })
         .catch((e) => e.response);
 }
 
@@ -179,8 +184,54 @@ async function GetAllBookings() {
 }
 
 
+
+
+async function UpdateResumeById(id: string, data: ResumeInterface) {
+    return await axios
+        .put(`${apiUrl}/resumes/${id}`, data, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function DeleteResumeById(id: string) {
+    return await axios
+        .delete(`${apiUrl}/resumes/${id}`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function CreateResume(data: ResumeInterface) {
+    return await axios
+        .post(`${apiUrl}/resumes`, data, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function GetResumeById(resume_id: string) {
+    const resumeId = localStorage.getItem("resume_id");
+    if (!resumeId) {
+        throw new Error("No resume_id found in local storage");
+    }
+
+    return await axios
+        .get(`${apiUrl}/resumes/${resumeId}`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+async function GetResume() {
+    return await axios
+        .get(`${apiUrl}/resumes`, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+}
 export {
     SignIn,
+
+    
+    GetResume,
+    UpdateResumeById,
+    DeleteResumeById,
+    GetResumeById,
+
+
+    CreateResume,
     GetAllBookings,
     GetSubmissions,
     UpdateBookingStatus,
@@ -198,5 +249,5 @@ export {
     GetPostworkById,
     DeletePostworkById,
     CreateBooking,
-    
+
 };
