@@ -205,16 +205,12 @@ async function CreateResume(data: ResumeInterface) {
         .catch((e) => e.response);
 }
 async function GetResumeById(resume_id: string) {
-    const resumeId = localStorage.getItem("resume_id");
-    if (!resumeId) {
-        throw new Error("No resume_id found in local storage");
-    }
-
     return await axios
-        .get(`${apiUrl}/resumes/${resumeId}`, requestOptions)
+        .get(`${apiUrl}/resumes/${resume_id}`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
+
 
 async function GetResume() {
     return await axios
