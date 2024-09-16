@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Avatar, Space, Carousel, message, Typography, Row, Col, Divider } from 'antd';
+import { Button, Card, Avatar, Space, message, Typography, Divider } from 'antd';
 import { UserOutlined, PhoneOutlined, MoneyCollectOutlined, FileTextOutlined } from "@ant-design/icons";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { GetPostworkById, GetUserProfile } from "../../../../services/https/index";
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ const PostPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [messageApi, contextHolder] = message.useMessage();
     const [bookerUserId, setBookerUserId] = useState<string | null>(null);
-    
+
     const fetchUserProfile = async () => {
         try {
             const profileRes = await GetUserProfile();
@@ -60,7 +60,7 @@ const PostPage: React.FC = () => {
             booker_user_id: bookerUserId,
             status: 'pending',
         };
-    
+
         try {
             const res = await axios.post(`http://localhost:8000/postwork/${postId}/bookings`, bookingPayload);
             if (res.status === 200) {
@@ -104,7 +104,14 @@ const PostPage: React.FC = () => {
                 <div style={{ width: '35%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <Card style={{ marginBottom: '20px' }}>
                         <Space size="large" align="center" style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Avatar size={100} src={postwork?.User?.Profile || undefined} icon={<UserOutlined />} />
+                            <Link to={`/customer/profile/${postwork.User?.ID}`} state={{ info: postwork.Work?.info || '' }}>
+                                <Avatar
+                                    src={postwork?.User?.Profile || undefined}
+                                    size={100}
+                                    icon={<UserOutlined />}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            </Link>
                             <Typography.Text strong>
                                 {postwork?.User?.first_name} {postwork?.User?.last_name}
                             </Typography.Text>
