@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 import { GetAllBookings, GetUserById, GetUserProfile, GetWorkById } from "../../../../services/https/index"; // Import ฟังก์ชันที่สร้าง
 import { BookingInterface } from "../../../../interfaces/Booking";
 import { UsersInterface } from "../../../../interfaces/IUser"; // Interface ของผู้ใช้
-import { WorkInterface } from "../../../../interfaces/Work"; // Interface ของงาน
+import { WorkInterface } from "../../../../interfaces/work"; // Interface ของงาน
 
 function Bookingwork() {
     const [bookings, setBookings] = useState<BookingInterface[]>([]);

@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import { Table, message, Spin, Select, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { GetBookingsByWorkID, GetUserById, UpdateBookingStatus } from "../../../../services/https/index";
 import { BookingInterface } from "../../../../interfaces/Booking";
 import { UsersInterface } from "../../../../interfaces/IUser"; // Interface ของผู้ใช้
 
 const { Option } = Select;
 
-function Managebooking() {
+function ManageBooking() {
     const { workID } = useParams<{ workID: string }>();
     const [bookings, setBookings] = useState<BookingInterface[]>([]);
     const [users, setUsers] = useState<Record<number, UsersInterface>>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
-    const [statusUpdates, setStatusUpdates] = useState<Record<number, string>>({}); // Track updated status
+    const [statusUpdates, setStatusUpdates] = useState<Record<number, string>>({});
+    const navigate = useNavigate(); // ใช้สำหรับ navigate ไปหน้าอื่น
 
     const columns: ColumnsType<BookingInterface> = [
         {
@@ -64,7 +65,6 @@ function Managebooking() {
                         <Option value="accepted">ยอมรับ</Option>
                         <Option value="rejected">ปฏิเสธ</Option>
                     </Select>
-
                     <Button
                         type="primary"
                         onClick={() => handleSubmitStatusUpdate(record.ID)}
@@ -75,15 +75,24 @@ function Managebooking() {
                 </div>
             ),
         },
+        {
+            title: "โปรไฟล์ผู้ใช้",
+            key: "view_profile",
+            render: (record) => (
+                <Button type="link" onClick={() => handleViewProfile(record.booker_user_id)}>
+                    ดูโปรไฟล์
+                </Button>
+            ),
+        },
     ];
 
     const getUserById = async (userId: number) => {
         try {
             let res = await GetUserById(userId);
             if (res.status === 200) {
-                setUsers(prevUsers => ({
+                setUsers((prevUsers) => ({
                     ...prevUsers,
-                    [userId]: res.data
+                    [userId]: res.data,
                 }));
             }
         } catch (error) {
@@ -104,8 +113,7 @@ function Managebooking() {
                     const bookingsData = res.data;
                     setBookings(bookingsData);
 
-                    // ดึงข้อมูลผู้ใช้ทั้งหมดที่เกี่ยวข้อง
-                    const userIds = Array.from(new Set(bookingsData.map(booking => booking.booker_user_id)));
+                    const userIds = Array.from(new Set(bookingsData.map((booking) => booking.booker_user_id)));
                     for (const userId of userIds) {
                         await getUserById(userId);
                     }
@@ -129,11 +137,12 @@ function Managebooking() {
     };
 
     const handleStatusChange = (bookingId: number, newStatus: string) => {
-        setStatusUpdates(prev => ({
+        setStatusUpdates((prev) => ({
             ...prev,
             [bookingId]: newStatus,
         }));
     };
+
     const handleSubmitStatusUpdate = async (bookingId: number) => {
         if (!bookingId || !statusUpdates[bookingId]) {
             messageApi.open({
@@ -142,9 +151,7 @@ function Managebooking() {
             });
             return;
         }
-    
-        console.log(`Updating booking ID ${bookingId} to status ${statusUpdates[bookingId]}`); // Debugging line
-    
+
         try {
             const res = await UpdateBookingStatus(bookingId, statusUpdates[bookingId]);
             if (res.status === 200) {
@@ -167,10 +174,10 @@ function Managebooking() {
             });
         }
     };
-    
-    
-    
 
+    const handleViewProfile = (userId: number) => {
+        navigate(`/resume/view/${userId}`); // นำทางไปที่หน้าโปรไฟล์ของผู้ใช้
+    };
 
     useEffect(() => {
         getBookings();
@@ -194,4 +201,4 @@ function Managebooking() {
     );
 }
 
-export default Managebooking;
+export default ManageBooking;

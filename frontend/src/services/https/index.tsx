@@ -215,16 +215,18 @@ async function GetResumeById(resume_id: string) {
         .then((res) => res)
         .catch((e) => e.response);
 }
+
 async function GetResume() {
     return await axios
         .get(`${apiUrl}/resumes`, requestOptions)
         .then((res) => res)
         .catch((e) => e.response);
 }
+
 export {
     SignIn,
 
-    
+
     GetResume,
     UpdateResumeById,
     DeleteResumeById,
