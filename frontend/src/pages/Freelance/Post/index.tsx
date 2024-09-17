@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
-import { Space, Table, Button, Col, Row, Divider, message } from "antd";
+import { Space, Table, Button, Col, Row, Divider, Avatar, Typography, message } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import { GetWork, DeleteWorkById } from "../../../services/https/index";
-import { WorkInterface } from "../../../interfaces/work";
+import { GetUserProfile, DeleteWorkById, GetPostwork } from "../../../services/https/index";
+import { PostworkInterface } from "../../../interfaces/Postwork";
 import { Link, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+
+const { Text } = Typography;
 
 function Work() {
     const navigate = useNavigate();
-    const [work, setWorks] = useState<WorkInterface[]>([]);
+    const [work, setWorks] = useState<PostworkInterface[]>([]);
+    const [profile, setProfile] = useState<any>(null);
     const [messageApi, contextHolder] = message.useMessage();
     const myId = localStorage.getItem("id");
 
-    const columns: ColumnsType<WorkInterface> = [
+    const columns: ColumnsType<PostworkInterface> = [
         {
             title: "",
             render: (record) =>
@@ -31,24 +35,39 @@ function Work() {
             key: "ID",
         },
         {
-            title: "รายละเอียดงาน",
-            dataIndex: "info",
-            key: "info",
+            title: "ID ผู้ใช้",
+            dataIndex: "id_user",
+            key: "id_user",
+        },
+        {
+            title: "ID งาน",
+            dataIndex: "id_work",
+            key: "id_work",
+        },
+        {
+            title: "ชื่อผู้ใช้",
+            key: "user_first_name",
+            render: (record) => <>{record?.User?.first_name}</>,
+        },
+        {
+            title: "นามสกุลผู้ใช้",
+            key: "user_last_name",
+            render: (record) => <>{record?.User?.last_name}</>,
+        },
+        {
+            title: "ชื่องาน",
+            key: "work_info",
+            render: (record) => <>{record?.Work?.info}</>,
+        },
+        {
+            title: "หมวดหมู่งาน",
+            key: "work_category",
+            render: (record) => <>{record?.Work?.category}</>,
         },
         {
             title: "ค่าจ้าง",
-            dataIndex: "wages",
-            key: "wages",
-        },
-        {
-            title: "ติดต่อ",
-            dataIndex: "contact",
-            key: "contact",
-        },
-        {
-            title: "หมวดหมู่",
-            dataIndex: "category",
-            key: "category",
+            key: "work_wages",
+            render: (record) => <>{record?.Work?.wages}</>,
         },
         {
             title: "",
@@ -64,7 +83,6 @@ function Work() {
         },
     ];
 
-
     const deleteWorkById = async (id: string) => {
         let res = await DeleteWorkById(id);
 
@@ -73,7 +91,7 @@ function Work() {
                 type: "success",
                 content: "ลบข้อมูลสำเร็จ",
             });
-            await getWorks();
+            await getPostworks();
         } else {
             messageApi.open({
                 type: "error",
@@ -82,9 +100,8 @@ function Work() {
         }
     };
 
-    const getWorks = async () => {
-        let res = await GetWork();
-
+    const getPostworks = async () => {
+        let res = await GetPostwork();
         if (res.status === 200) {
             setWorks(res.data);
         } else {
@@ -96,13 +113,40 @@ function Work() {
         }
     };
 
+    const getUserProfile = async () => {
+        try {
+            const res = await GetUserProfile();
+            setProfile(res);
+        } catch (error) {
+            messageApi.open({
+                type: "error",
+                content: "Failed to fetch user profile.",
+            });
+        }
+    };
+
     useEffect(() => {
-        getWorks();
+        getPostworks();
+        getUserProfile();
     }, []);
+
+    // กรองข้อมูล postworks ให้แสดงเฉพาะที่ id_user ตรงกับ profile.ID
+    const filteredPostworks = work.filter((postwork) => postwork.id_user === profile?.ID);
 
     return (
         <>
             {contextHolder}
+            <Row justify="center" style={{ marginBottom: "20px" }}>
+                {profile && (
+                    <Col>
+                        <Space direction="vertical" align="center">
+                            <Avatar src={profile?.Profile} size={128} shape="square" />
+                            <Text strong>{profile?.ID} {profile?.FirstName} {profile?.LastName}</Text>
+                        </Space>
+                    </Col>
+                )}
+            </Row>
+            <Divider />
             <Row>
                 <Col span={12}>
                     <h2>จัดการข้อมูลงาน</h2>
@@ -118,7 +162,7 @@ function Work() {
                 </Col>
             </Row>
             <Divider />
-            <Table columns={columns} dataSource={work} />
+            <Table columns={columns} dataSource={filteredPostworks} />
         </>
     );
 }
