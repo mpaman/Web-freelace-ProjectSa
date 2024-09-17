@@ -1,4 +1,3 @@
-// WorkEdit.tsx
 import { useEffect } from "react";
 import {
     Space,
@@ -71,63 +70,74 @@ function WorkEdit() {
     }, [id]);
 
     return (
-        <div>
+        <div style={{ padding: "20px" }}>
             {contextHolder}
-            <Card>
-                <h2>แก้ไขข้อมูลงาน</h2>
-                <Divider />
+            <Row justify="center" style={{ marginBottom: "20px" }}>
+                <Col span={24}>
+                    <h2 style={{ textAlign: "center" }}>แก้ไขข้อมูลงาน</h2>
+                </Col>
+            </Row>
+            <Divider />
+            <Card bordered={false} style={{ maxWidth: "800px", margin: "auto" }}>
                 <Form
-                    name="basic"
+                    name="work-edit"
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                     autoComplete="off"
                 >
-                    <Row gutter={[16, 0]}>
-
-                        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
+                    <Row gutter={[16, 24]}>
+                        <Col span={24}>
                             <Form.Item
                                 label="รายละเอียดงาน"
                                 name="info"
                                 rules={[{ required: true, message: "กรุณากรอกรายละเอียดงาน!" }]}
                             >
-                                <Input />
+                                <Input.TextArea
+                                    style={{ width: "100%", height: "200px" }}  // Apply width and height here
+                                    placeholder="กรุณากรอกรายละเอียดงาน"
+                                />
                             </Form.Item>
                         </Col>
 
-                        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
+                        <Col xs={24} sm={12}>
                             <Form.Item
                                 label="ค่าจ้าง"
                                 name="wages"
                                 rules={[{ required: true, message: "กรุณากรอกค่าจ้าง!" }]}
                             >
-                                <InputNumber min={0} max={10000000} style={{ width: "100%" }} />
+                                <InputNumber 
+                                    min={0} 
+                                    max={10000000} 
+                                    style={{ width: "100%" }} 
+                                    placeholder="กรุณากรอกค่าจ้าง" 
+                                />
                             </Form.Item>
                         </Col>
 
-                        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
+                        <Col xs={24} sm={12}>
                             <Form.Item
                                 label="ข้อมูลการติดต่อ"
                                 name="contact"
                                 rules={[{ required: true, message: "กรุณากรอกข้อมูลการติดต่อ!" }]}
                             >
-                                <Input />
+                                <Input placeholder="กรุณากรอกข้อมูลการติดต่อ" />
                             </Form.Item>
                         </Col>
 
-                        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
+                        <Col xs={24} sm={12}>
                             <Form.Item
                                 label="หมวดหมู่"
                                 name="category"
                                 rules={[{ required: true, message: "กรุณากรอกหมวดหมู่!" }]}
                             >
-                                <Input />
+                                <Input placeholder="กรุณากรอกหมวดหมู่" />
                             </Form.Item>
                         </Col>
                     </Row>
 
-                    <Row justify="end">
-                        <Col style={{ marginTop: "40px" }}>
+                    <Row justify="end" style={{ marginTop: "20px" }}>
+                        <Col>
                             <Form.Item>
                                 <Space>
                                     <Link to="/work">
