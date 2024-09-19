@@ -27,6 +27,15 @@ const PostPage: React.FC = () => {
         }
     };
 
+    const isValidURL = (urlString: string) => {
+        try {
+            new URL(urlString);
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
     useEffect(() => {
         fetchUserProfile();
         const fetchPostwork = async () => {
@@ -124,7 +133,13 @@ const PostPage: React.FC = () => {
                                 <PhoneOutlined /> Contact
                             </Title>
                             <Paragraph>
-                                {postwork?.Work?.contact || 'No Contact Information'}
+                                {isValidURL(postwork?.Work?.contact) ? (
+                                    <a href={postwork.Work.contact} target="_blank" rel="noopener noreferrer">
+                                        GO TO CONTACT
+                                    </a>
+                                ) : (
+                                    postwork?.Work?.contact || 'No Contact Information'
+                                )}
                             </Paragraph>
                             <Divider />
                             <Title level={4}>

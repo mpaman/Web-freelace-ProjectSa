@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { Col, Row, Divider, message, Input, Typography, Select, Avatar, Pagination } from "antd";
+import { Col, Row, Divider, message, Input, Typography, Select, Avatar } from "antd";
 import { GetPostwork } from "../../../../services/https/index";
 import { PostworkInterface } from "../../../../interfaces/Postwork";
 import { useNavigate } from "react-router-dom";
-// import videoBg from "../../../../assets/back.mp4";
 
 const { Search } = Input;
 const { Option } = Select;
 const { TextArea } = Input;
 
 function PostworkList() {
+
     const [postworks, setPostworks] = useState<PostworkInterface[]>([]);
     const [filteredPostworks, setFilteredPostworks] = useState<PostworkInterface[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
@@ -17,10 +17,6 @@ function PostworkList() {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const navigate = useNavigate();
-
-    // Pagination state
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const pageSize = 5; // Number of items per page
 
     const getPostworks = async () => {
         try {
@@ -51,7 +47,7 @@ function PostworkList() {
     };
 
     const handlePostClick = (postId: number) => {
-        navigate(`/post/${postId}`); // Navigate to PostPage with postId
+        navigate(`/post/${postId}`);// Navigate to PostPage with postId
     };
 
     const handleSearch = (value: string) => {
@@ -67,7 +63,6 @@ function PostworkList() {
                 ? filtered.filter((postwork) => postwork.Work?.category === selectedCategory)
                 : filtered
         );
-        setCurrentPage(1); // Reset to the first page after search
     };
 
     const handleSelectChange = (value: string | null) => {
@@ -80,42 +75,16 @@ function PostworkList() {
                     postwork.User?.last_name.toLowerCase().includes(searchTerm.toLowerCase()))
         );
         setFilteredPostworks(filtered);
-        setCurrentPage(1); // Reset to the first page after filter
-    };
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
     };
 
     useEffect(() => {
         getPostworks();
     }, []);
 
-    // Calculate the items for the current page
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const currentPostworks = filteredPostworks.slice(startIndex, endIndex);
-
     return (
         <>
             {contextHolder}
-            {/* <video
-                autoPlay
-                loop
-                muted
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    zIndex: -1,
-                    filter: "brightness(0.6)", // Reduce brightness for contrast
-                }}
-            >
-                <source src={videoBg} type="video/mp4" />
-            </video> */}
+
             <Row justify="space-between" align="middle">
                 <Col>
                     <h2>HOME</h2>
@@ -134,10 +103,10 @@ function PostworkList() {
                     </Select>
                 </Col>
                 <Col>
-                    <Search
+                    <Input
                         placeholder="ค้นหาด้วยชื่อ"
-                        onSearch={handleSearch}
-                        enterButton
+                        onChange={(e) => handleSearch(e.target.value)}
+                        value={searchTerm}
                         style={{ width: 300 }}
                     />
                 </Col>
@@ -146,7 +115,7 @@ function PostworkList() {
             <Divider />
 
             <div style={{ marginTop: 20 }}>
-                {currentPostworks.map((postwork) => (
+                {filteredPostworks.map((postwork) => (
                     <Row key={postwork.ID} style={{ marginBottom: 20 }}>
                         <Col span={24} onClick={() => handlePostClick(postwork.ID)} style={{ cursor: 'pointer' }}>
                             <Row align="middle">
@@ -177,16 +146,6 @@ function PostworkList() {
                     </Row>
                 ))}
             </div>
-
-            {/* Pagination */}
-            <Row justify="center" style={{ marginTop: 20 }}>
-                <Pagination
-                    current={currentPage}
-                    pageSize={pageSize}
-                    total={filteredPostworks.length}
-                    onChange={handlePageChange}
-                />
-            </Row>
         </>
     );
 }
