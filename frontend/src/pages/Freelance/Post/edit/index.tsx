@@ -15,7 +15,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { WorkInterface } from "../../../../interfaces/work";
 import { GetWorkById, UpdateWorkById } from "../../../../services/https/index";
 import { useNavigate, Link, useParams } from "react-router-dom";
-
+import videoBg from "../../../../assets/back.mp4";
 function WorkEdit() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -72,6 +72,24 @@ function WorkEdit() {
     return (
         <div style={{ padding: "20px" }}>
             {contextHolder}
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <Row justify="center" style={{ marginBottom: "20px" }}>
                 <Col span={24}>
                     <h2 style={{ textAlign: "center" }}>แก้ไขข้อมูลงาน</h2>
@@ -106,11 +124,11 @@ function WorkEdit() {
                                 name="wages"
                                 rules={[{ required: true, message: "กรุณากรอกค่าจ้าง!" }]}
                             >
-                                <InputNumber 
-                                    min={0} 
-                                    max={10000000} 
-                                    style={{ width: "100%" }} 
-                                    placeholder="กรุณากรอกค่าจ้าง" 
+                                <InputNumber
+                                    min={0}
+                                    max={10000000}
+                                    style={{ width: "100%" }}
+                                    placeholder="กรุณากรอกค่าจ้าง"
                                 />
                             </Form.Item>
                         </Col>

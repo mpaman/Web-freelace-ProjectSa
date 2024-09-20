@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { GetBookingsByWorkID, GetUserById, UpdateBookingStatus } from "../../../../services/https/index";
 import { BookingInterface } from "../../../../interfaces/Booking";
 import { UsersInterface } from "../../../../interfaces/IUser"; // Interface ของผู้ใช้
-
+import videoBg from "../../../../assets/back.mp4";
 const { Option } = Select;
 
 function ManageBooking() {
@@ -19,9 +19,9 @@ function ManageBooking() {
 
     const columns: ColumnsType<BookingInterface> = [
         {
-            title: "Booking ID",
-            dataIndex: "ID",
-            key: "ID",
+            title: "ID ผู้ใช้",
+            dataIndex: "booker_user_id",
+            key: "booker_user_id",
         },
         {
             title: "ชื่อผู้จองงาน",
@@ -81,6 +81,15 @@ function ManageBooking() {
             render: (record) => (
                 <Button type="link" onClick={() => handleViewProfile(record.booker_user_id)}>
                     ดูโปรไฟล์
+                </Button>
+            ),
+        },
+        {
+            title: "จ่ายเงิน",
+            key: "payment",
+            render: (record) => (
+                <Button type="link" onClick={() => handleViewProfile(record.booker_user_id)}>
+                    จ่ายเงิน
                 </Button>
             ),
         },
@@ -186,6 +195,24 @@ function ManageBooking() {
     return (
         <>
             {contextHolder}
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <h2>จัดการการจองสำหรับงาน ID: {workID}</h2>
             {loading ? (
                 <Spin size="large" />
@@ -194,7 +221,6 @@ function ManageBooking() {
                     rowKey="ID"
                     columns={columns}
                     dataSource={bookings}
-                    style={{ width: "100%", overflow: "scroll" }}
                 />
             )}
         </>

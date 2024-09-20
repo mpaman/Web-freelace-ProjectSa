@@ -6,6 +6,7 @@ import { GetUserProfile, DeleteWorkById, GetPostwork } from "../../../services/h
 import { PostworkInterface } from "../../../interfaces/Postwork";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import videoBg from "../../../assets/back.mp4"; // Background video
 
 const { Text } = Typography;
 
@@ -136,17 +137,41 @@ function Work() {
     return (
         <>
             {contextHolder}
+
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
+
             <Row justify="center" style={{ marginBottom: "20px" }}>
                 {profile && (
                     <Col>
                         <Space direction="vertical" align="center">
                             <Avatar src={profile?.Profile} size={128} shape="square" />
-                            <Text strong>{profile?.ID} {profile?.FirstName} {profile?.LastName}</Text>
+                            <Text strong>
+                                {profile?.FirstName} {profile?.LastName}
+                            </Text>
                         </Space>
                     </Col>
                 )}
             </Row>
+
             <Divider />
+
             <Row>
                 <Col span={12}>
                     <h2>จัดการข้อมูลงาน</h2>
@@ -161,7 +186,9 @@ function Work() {
                     </Space>
                 </Col>
             </Row>
+
             <Divider />
+
             <Table columns={columns} dataSource={filteredPostworks} />
         </>
     );

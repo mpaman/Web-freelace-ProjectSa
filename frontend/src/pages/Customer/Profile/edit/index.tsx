@@ -21,7 +21,7 @@ import { GetUserById, UpdateUsersById } from "../../../../services/https/index";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import ImgCrop from "antd-img-crop";
-
+import videoBg from "../../../../assets/back.mp4";
 const { Title } = Typography;
 
 function CustomerEdit() {
@@ -149,6 +149,24 @@ function CustomerEdit() {
   return (
     <div style={{ padding: "40px", backgroundColor: "#f0f2f5" }}>
       {contextHolder}
+                  {/* Background video */}
+                  <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
       <Card
         style={{
           maxWidth: "800px",

@@ -4,7 +4,7 @@ import { UserOutlined, PhoneOutlined, MoneyCollectOutlined, FileTextOutlined } f
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { GetPostworkById, GetUserProfile } from "../../../../services/https/index";
 import axios from 'axios';
-
+import videoBg from "../../../../assets/back.mp4";
 const { Title, Paragraph } = Typography;
 
 const PostPage: React.FC = () => {
@@ -100,6 +100,24 @@ const PostPage: React.FC = () => {
     return (
         <>
             {contextHolder}
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ width: '60%' }}>
                     <Card style={{ width: '100%', height: '600px', overflowY: 'auto' }}>

@@ -6,6 +6,7 @@ import { GetAllBookings, GetUserById, GetUserProfile, GetWorkById } from "../../
 import { BookingInterface } from "../../../../interfaces/Booking";
 import { UsersInterface } from "../../../../interfaces/IUser"; // Interface ของผู้ใช้
 import { WorkInterface } from "../../../../interfaces/work"; // Interface ของงาน
+import videoBg from "../../../../assets/back.mp4";
 
 function Bookingwork() {
     const [bookings, setBookings] = useState<BookingInterface[]>([]);
@@ -29,7 +30,7 @@ function Bookingwork() {
         {
             title: "ค่าจ้าง (บาท)",
             key: "wages",
-            render: (record) => works[record.work_id] ?.wages|| 'No wages information'  ,
+            render: (record) => works[record.work_id]?.wages || 'No wages information',
         },
         {
             title: "ข้อมูลการติดต่อ",
@@ -152,6 +153,24 @@ function Bookingwork() {
     return (
         <>
             {contextHolder}
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <h2>ข้อมูลการจองของคุณ</h2>
             {loading ? (
                 <Spin size="large" />
@@ -160,7 +179,6 @@ function Bookingwork() {
                     rowKey="ID"
                     columns={columns}
                     dataSource={bookings}
-                    style={{ width: "100%", overflow: "scroll" }}
                 />
             )}
         </>

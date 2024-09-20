@@ -6,6 +6,7 @@ import { GetSubmissionsByWorkID, GetUserById, GetWorkById } from "../../../../se
 import { SubmissionInterface } from "../../../../interfaces/submission";
 import { UsersInterface } from "../../../../interfaces/IUser";
 import { WorkInterface } from "../../../../interfaces/work";
+import videoBg from "../../../../assets/back.mp4";
 
 function ManageSubmissions() {
     const { workID } = useParams<{ workID: string }>();
@@ -143,6 +144,24 @@ function ManageSubmissions() {
     return (
         <>
             {contextHolder}
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <h2>จัดการการส่งงานสำหรับงาน ID: {workID}</h2>
             {loading ? (
                 <Spin size="large" />
@@ -151,7 +170,7 @@ function ManageSubmissions() {
                     rowKey="id"
                     columns={columns}
                     dataSource={submissions}
-                    style={{ width: "100%", overflow: "scroll" }}
+
                 />
             )}
         </>

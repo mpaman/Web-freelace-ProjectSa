@@ -75,6 +75,7 @@ func main() {
     authorized.PUT("/resumes/:id", resume.UpdateResume)
     authorized.DELETE("/resumes/:id", resume.DeleteResume)
     
+    
     r.GET("/", func(c *gin.Context) {
         c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
     })

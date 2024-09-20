@@ -4,7 +4,7 @@ import { FileOutlined, PhoneOutlined, MoneyCollectOutlined, UploadOutlined } fro
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetPostworkById, GetUserProfile } from '../../../../services/https/index';
 import axios from 'axios';
-
+import videoBg from "../../../../assets/back.mp4";
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
 
@@ -17,6 +17,14 @@ const Sent: React.FC = () => {
     const [fileLink, setFileLink] = useState<string | null>(null);
     const [bookerUserId, setBookerUserId] = useState<string | null>(null);
 
+    const isValidURL = (urlString: string) => {
+        try {
+            new URL(urlString);
+            return true;
+        } catch {
+            return false;
+        }
+    };
     const fetchUserProfile = async () => {
         try {
             const profileRes = await GetUserProfile();
@@ -64,9 +72,9 @@ const Sent: React.FC = () => {
                     booker_user_id: bookerUserId,
                     file_link: fileLink,
                 };
-    
+
                 const res = await axios.post(`http://localhost:8000/postwork/${postId}/sent`, submissionPayload);
-    
+
                 if (res.status === 200) {
                     message.success("Submission successful!");
                     navigate(`/post/${postId}`);
@@ -86,7 +94,26 @@ const Sent: React.FC = () => {
     }
 
     return (
+
         <div style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <div style={{ width: '60%' }}>
                 {/* Job Details */}
                 <Card style={{ width: '100%', height: 'auto', marginBottom: '20px', overflowY: 'auto' }}>
@@ -106,7 +133,13 @@ const Sent: React.FC = () => {
                     </Title>
                     <Paragraph style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
                         <PhoneOutlined style={{ marginRight: '8px' }} />
-                        ติดต่อ: {postwork?.Work?.contact || 'No contact information available'}
+                        {isValidURL(postwork?.Work?.contact) ? (
+                            <a href={postwork.Work.contact} target="_blank" rel="noopener noreferrer">
+                                GO TO CONTACT
+                            </a>
+                        ) : (
+                            postwork?.Work?.contact || 'No Contact Information'
+                        )}
                         <br />
                         <MoneyCollectOutlined style={{ marginRight: '8px' }} />
                         ค่าจ้าง: {postwork?.Work?.wages || 'No wage information available'} บาท

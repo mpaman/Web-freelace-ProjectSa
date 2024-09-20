@@ -49,7 +49,7 @@ func SetupDatabase() {
 		&entity.Postwork{},
 
 		&entity.Booking{},
-		
+
 		&entity.Submission{},
 
 		&entity.Profile{},
@@ -59,7 +59,9 @@ func SetupDatabase() {
 		&entity.Experience{},
 		&entity.Skill{},
 		&entity.Resume{},
-	)
+		&entity.Payment{},
 
+		&entity.Rating{},
+	)
 
 }

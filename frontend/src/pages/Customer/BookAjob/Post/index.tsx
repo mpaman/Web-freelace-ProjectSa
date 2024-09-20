@@ -4,6 +4,7 @@ import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
 import { GetPostwork, GetUserProfile } from "../../../../services/https/index";
 import { PostworkInterface } from "../../../../interfaces/Postwork";
+import videoBg from "../../../../assets/back.mp4"; // Background video
 
 function Postwork() {
     const [postworks, setPostworks] = useState<PostworkInterface[]>([]);
@@ -17,7 +18,7 @@ function Postwork() {
             key: "id",
         },
         {
-            title: "ID ผู้ใช้",
+            title: "ID ผู้โพส",
             dataIndex: "id_user",
             key: "id_user",
         },
@@ -49,7 +50,7 @@ function Postwork() {
         {
             title: "ค่าจ้าง (บาท)",
             key: "work_wages",
-            render: (record) => <>{record?.Work?.wages}  </>,
+            render: (record) => <>{record?.Work?.wages}</>,
         },
         {
             title: "จัดการการจอง",
@@ -59,7 +60,6 @@ function Postwork() {
                     <Link to={`/works/${record.id_work}/bookings`}>
                         <Button type="primary">จัดการการจอง</Button>
                     </Link>
-                    {/* ช่องติดตามงานใหม่ */}
                     <Link to={`/works/${record.id_work}/track`}>
                         <Button type="default">ติดตามงาน</Button>
                     </Link>
@@ -68,7 +68,6 @@ function Postwork() {
         },
     ];
 
-    // ฟังก์ชันดึงโปรไฟล์ผู้ใช้
     const fetchUserProfile = async () => {
         try {
             const profileRes = await GetUserProfile();
@@ -81,13 +80,11 @@ function Postwork() {
         }
     };
 
-    // ฟังก์ชันดึงข้อมูล postworks
     const getPostworks = async () => {
         let res = await GetPostwork();
         if (res.status === 200) {
             const allPostworks = res.data;
             if (userId) {
-                // กรองเฉพาะ postworks ของผู้ใช้ที่ล็อกอิน
                 const userPostworks = allPostworks.filter(
                     (postwork: PostworkInterface) => postwork.id_user === userId
                 );
@@ -105,15 +102,34 @@ function Postwork() {
     };
 
     useEffect(() => {
-        // เรียก fetchUserProfile เพื่อดึง userId ก่อน แล้วจึงเรียก getPostworks
         fetchUserProfile().then(() => {
             getPostworks();
         });
-    }, [userId]); // ดัก userId เพื่อดึงข้อมูลเมื่อ userId เปลี่ยน
+    }, [userId]);
 
     return (
         <>
             {contextHolder}
+
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
+
             <Row>
                 <Col span={12}>
                     <h2>รายการ Postwork ของคุณ</h2>
@@ -125,7 +141,6 @@ function Postwork() {
                     rowKey="ID"
                     columns={columns}
                     dataSource={postworks}
-                    style={{ width: "100%", overflow: "scroll" }}
                 />
             </div>
         </>

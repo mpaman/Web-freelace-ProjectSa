@@ -6,6 +6,7 @@ import { GetResumeById } from "../../../../services/https/index";
 
 import { PhoneOutlined, MailOutlined, HomeOutlined, IdcardOutlined, RadarChartOutlined, LaptopOutlined, BookOutlined } from '@ant-design/icons';
 
+import videoBg from "../../../../assets/back.mp4";
 const { Title, Paragraph } = Typography;
 
 interface Personal {
@@ -97,6 +98,24 @@ const ViewResume = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <Row
                 gutter={16}
                 style={{

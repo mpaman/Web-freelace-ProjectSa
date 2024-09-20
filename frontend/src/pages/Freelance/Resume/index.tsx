@@ -4,6 +4,7 @@ import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import { GetResume, GetUsers, DeleteResumeById } from "../../../services/https/index"; // Import necessary functions
+import videoBg from "../../../assets/back.mp4";
 
 const { Title } = Typography;
 
@@ -129,6 +130,24 @@ const ResumeMain = () => {
     return (
         <>
             {contextHolder}
+                        {/* Background video */}
+                        <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <Row gutter={16}>
                 <Col span={24} style={{ textAlign: "center" }}>
                     <Title level={2} style={{ color: '#06579b', fontSize: '70px', textTransform: 'uppercase', letterSpacing: '10px' }}>

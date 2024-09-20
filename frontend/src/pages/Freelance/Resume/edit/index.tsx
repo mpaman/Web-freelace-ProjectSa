@@ -20,7 +20,7 @@ import ImgCrop from 'antd-img-crop';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
-
+import videoBg from "../../../../assets/back.mp4";
 const { TabPane } = Tabs;
 
 function EditResume() {
@@ -149,6 +149,25 @@ function EditResume() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+            
+            {/* Background video */}
+            <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)", // Reduce brightness for contrast
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             {contextHolder}
             <Card>
                 <center>
