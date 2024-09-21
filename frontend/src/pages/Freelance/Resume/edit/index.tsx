@@ -20,7 +20,7 @@ import ImgCrop from 'antd-img-crop';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
-import videoBg from "../../../../assets/back.mp4";
+
 const { TabPane } = Tabs;
 
 function EditResume() {
@@ -88,14 +88,14 @@ function EditResume() {
         }
 
         try {
-            // ใช้ thumbUrl ของไฟล์แรกใน fileList
-            const profileUrl = fileList.length > 0 ? fileList[0].thumbUrl : '';
+            // ใช้ URL ของไฟล์ใน fileList โดยตรง
+            const profileUrl = fileList.length > 0 ? fileList[0].url : '';
 
             const payload = {
                 ...values,
                 personal: {
                     ...values.personal,
-                    Profile: profileUrl, // ใช้ thumbUrl ของไฟล์
+                    Profile: profileUrl, // ใช้ URL ของไฟล์
                 },
                 experience: values.experience ? {
                     ...values.experience,
@@ -116,15 +116,17 @@ function EditResume() {
         }
     };
 
+    // ฟังก์ชันเปลี่ยนไฟล์เป็น Base64 string
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         const newFileList = fileList.map(file => {
-            if (file.url) {
-                return file;
+            if (file.originFileObj) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file.originFileObj);
+                reader.onload = () => {
+                    setFileList(prev => prev.map(f => (f.uid === file.uid ? { ...f, url: reader.result as string } : f)));
+                };
             }
-            return {
-                ...file,
-                url: file.originFileObj ? URL.createObjectURL(file.originFileObj) : '',
-            };
+            return file;
         });
         setFileList(newFileList);
     };
@@ -149,25 +151,6 @@ function EditResume() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-            
-            {/* Background video */}
-            <video
-                autoPlay
-                loop
-                muted
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    zIndex: -1,
-                    filter: "brightness(0.6)", // Reduce brightness for contrast
-                }}
-            >
-                <source src={videoBg} type="video/mp4" />
-            </video>
             {contextHolder}
             <Card>
                 <center>
@@ -240,36 +223,70 @@ function EditResume() {
 
                                         <Row gutter={16}>
                                             <Col span={12}>
-                                                <Form.Item label="ชื่อจริง" name={['personal', 'first_name']}>
+                                                <Form.Item label="ชื่อจริง" name={['personal', 'first_name']} rules={[{ required: true, message: 'กรุณากรอกชื่อจริง' }]}>
                                                     <Input placeholder="กรุณากรอกชื่อจริง" />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
-                                                <Form.Item label="นามสกุล" name={['personal', 'last_name']}>
+                                                <Form.Item label="นามสกุล" name={['personal', 'last_name']} rules={[{ required: true, message: 'กรุณากรอกนามสกุล' }]}>
                                                     <Input placeholder="กรุณากรอกนามสกุล" />
                                                 </Form.Item>
                                             </Col>
                                         </Row>
                                         <Row gutter={16}>
                                             <Col span={12}>
-                                                <Form.Item label="ที่อยู่" name={['personal', 'address']}>
+                                                <Form.Item label="ที่อยู่" name={['personal', 'address']} rules={[{ required: true, message: 'กรุณากรอกที่อยู่' }]}>
                                                     <Input placeholder="กรุณากรอกที่อยู่" />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
-                                                <Form.Item label="จังหวัด" name={['personal', 'province']}>
+                                                <Form.Item label="จังหวัด" name={['personal', 'province']} rules={[{ required: true, message: 'กรุณากรอกจังหวัด' }]}>
                                                     <Input placeholder="กรุณากรอกจังหวัด" />
                                                 </Form.Item>
                                             </Col>
                                         </Row>
                                         <Row gutter={16}>
                                             <Col span={12}>
-                                                <Form.Item label="หมายเลขโทรศัพท์" name={['personal', 'phone_number']}>
+                                                <Form.Item
+                                                    label="หมายเลขโทรศัพท์"
+                                                    name={['personal', 'phone_number']}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: 'กรุณากรอกหมายเลขโทรศัพท์',
+                                                        },
+                                                        {
+                                                            pattern: /^[0-9]{10}$/, // ตรวจสอบว่าเป็นตัวเลข 10 หลัก
+                                                            message: 'หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก',
+                                                        },
+                                                    ]}
+                                                >
                                                     <Input placeholder="กรุณากรอกหมายเลขโทรศัพท์" />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
-                                                <Form.Item label="อีเมล" name={['personal', 'email']}>
+                                                <Form.Item
+                                                    label="อีเมล"
+                                                    name={['personal', 'email']}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: 'กรุณากรอกอีเมล',
+                                                        },
+                                                        {
+                                                            type: 'email',
+                                                            message: 'กรุณากรอกอีเมลให้ถูกต้อง',
+                                                        },
+                                                        {
+                                                            validator: (_, value) => {
+                                                                if (value && !value.includes('@')) {
+                                                                    return Promise.reject(new Error('อีเมลต้องมี @'));
+                                                                }
+                                                                return Promise.resolve();
+                                                            },
+                                                        },
+                                                    ]}
+                                                >
                                                     <Input placeholder="กรุณากรอกอีเมล" />
                                                 </Form.Item>
                                             </Col>
@@ -283,13 +300,26 @@ function EditResume() {
                             <div ref={(el) => (tabContentRef.current['2'] = el)}>
                                 <Form form={form} name="study" layout="vertical" onFinish={onFinish} autoComplete="off">
                                     <Card title={<span style={{ textAlign: 'center', display: 'block' }}>การศึกษา</span>} style={{ marginBottom: '20px' }}>
-                                        <Form.Item label="การศึกษา" name={['study', 'education']}>
+                                        <Form.Item label="การศึกษา" name={['study', 'education']} rules={[{ required: true, message: 'กรุณากรอกการศึกษา' }]}>
                                             <Input placeholder="กรุณากรอกการศึกษา" />
                                         </Form.Item>
-                                        <Form.Item label="สถาบัน" name={['study', 'institution']}>
+                                        <Form.Item label="สถาบัน" name={['study', 'institution']} rules={[{ required: true, message: 'กรุณากรอกสถาบัน' }]}>
                                             <Input placeholder="กรุณากรอกสถาบัน" />
                                         </Form.Item>
-                                        <Form.Item label="ปีจบการศึกษา" name={['study', 'year']}>
+                                        <Form.Item
+                                            label="ปีจบการศึกษา"
+                                            name={['study', 'year']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'กรุณากรอกปีจบการศึกษา',
+                                                },
+                                                {
+                                                    pattern: /^\d{4}$/, // ตรวจสอบว่าเป็นตัวเลข 4 หลัก
+                                                    message: 'ปีจบการศึกษาต้องเป็นตัวเลข 4 หลัก',
+                                                },
+                                            ]}
+                                        >
                                             <Input placeholder="กรุณากรอกปีจบการศึกษา" />
                                         </Form.Item>
                                     </Card>
@@ -301,16 +331,16 @@ function EditResume() {
                             <div ref={(el) => (tabContentRef.current['3'] = el)}>
                                 <Form form={form} name="experience" layout="vertical" onFinish={onFinish} autoComplete="off">
                                     <Card title={<span style={{ textAlign: 'center', display: 'block' }}>ประสบการณ์</span>} style={{ marginBottom: '20px' }}>
-                                        <Form.Item label="ตำแหน่งงาน" name={['experience', 'JobTitle']}>
+                                        <Form.Item label="ตำแหน่งงาน" name={['experience', 'JobTitle']} rules={[{ required: true, message: 'กรุณากรอกตำแหน่งงาน' }]}>
                                             <Input placeholder="กรุณากรอกตำแหน่งงาน" />
                                         </Form.Item>
-                                        <Form.Item label="บริษัท" name={['experience', 'company']}>
+                                        <Form.Item label="บริษัท" name={['experience', 'company']} rules={[{ required: true, message: 'กรุณากรอกบริษัท' }]}>
                                             <Input placeholder="กรุณากรอกบริษัท" />
                                         </Form.Item>
-                                        <Form.Item label="เริ่มงาน" name={['experience', 'startDate']}>
+                                        <Form.Item label="เริ่มงาน" name={['experience', 'startDate']} rules={[{ required: true, message: 'กรุณาเลือกวันที่เริ่มงาน' }]}>
                                             <DatePicker style={{ width: '100%' }} />
                                         </Form.Item>
-                                        <Form.Item label="สิ้นสุดงาน" name={['experience', 'endDate']}>
+                                        <Form.Item label="สิ้นสุดงาน" name={['experience', 'endDate']} rules={[{ required: true, message: 'กรุณาเลือกวันที่สิ้นสุดงาน' }]}>
                                             <DatePicker style={{ width: '100%' }} />
                                         </Form.Item>
                                     </Card>
@@ -325,8 +355,12 @@ function EditResume() {
                                         {/* Row for Skill 1 */}
                                         <Row gutter={16}>
                                             <Col span={12}>
-                                                <Form.Item label="ทักษะที่ 1" name={['skill', 'skill1']}>
-                                                    <Input placeholder="กรุณากรอกทักษะที่ 1" />
+                                                <Form.Item
+                                                    label="ทักษะ 1"
+                                                    name={['skill', 'skill1']}
+                                                    rules={[{ required: true, message: 'กรุณากรอกทักษะ 1' }]}
+                                                >
+                                                    <Input placeholder="กรุณากรอกทักษะ 1" />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
@@ -339,9 +373,14 @@ function EditResume() {
                                         {/* Row for Skill 2 */}
                                         <Row gutter={16} style={{ marginTop: '10px' }}>
                                             <Col span={12}>
-                                                <Form.Item label="ทักษะที่ 2" name={['skill', 'skill2']}>
-                                                    <Input placeholder="กรุณากรอกทักษะที่ 2" />
+                                                <Form.Item
+                                                    label="ทักษะ 2"
+                                                    name={['skill', 'skill2']}
+                                                    rules={[{ required: true, message: 'กรุณากรอกทักษะ 2' }]}
+                                                >
+                                                    <Input placeholder="กรุณากรอกทักษะ 2" />
                                                 </Form.Item>
+
                                             </Col>
                                             <Col span={12}>
                                                 <Form.Item label="ระดับทักษะที่ 2" name={['skill', 'level2']}>
@@ -353,8 +392,12 @@ function EditResume() {
                                         {/* Row for Skill 3 */}
                                         <Row gutter={16} style={{ marginTop: '10px' }}>
                                             <Col span={12}>
-                                                <Form.Item label="ทักษะที่ 3" name={['skill', 'skill3']}>
-                                                    <Input placeholder="กรุณากรอกทักษะที่ 3" />
+                                                <Form.Item
+                                                    label="ทักษะ 3"
+                                                    name={['skill', 'skill3']}
+                                                    rules={[{ required: true, message: 'กรุณากรอกทักษะ 3' }]}
+                                                >
+                                                    <Input placeholder="กรุณากรอกทักษะ 3" />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>

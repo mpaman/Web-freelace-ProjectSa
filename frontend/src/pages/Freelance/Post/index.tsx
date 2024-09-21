@@ -30,21 +30,21 @@ function Work() {
                     />
                 ),
         },
-        {
-            title: "ลำดับ",
-            dataIndex: "ID",
-            key: "ID",
-        },
-        {
-            title: "ID ผู้ใช้",
-            dataIndex: "id_user",
-            key: "id_user",
-        },
-        {
-            title: "ID งาน",
-            dataIndex: "id_work",
-            key: "id_work",
-        },
+        // {
+        //     title: "ลำดับ",
+        //     dataIndex: "ID",
+        //     key: "ID",
+        // },
+        // {
+        //     title: "ID ผู้ใช้",
+        //     dataIndex: "id_user",
+        //     key: "id_user",
+        // },
+        // {
+        //     title: "ID งาน",
+        //     dataIndex: "id_work",
+        //     key: "id_work",
+        // },
         {
             title: "ชื่อผู้ใช้",
             key: "user_first_name",

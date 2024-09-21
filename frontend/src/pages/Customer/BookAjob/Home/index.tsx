@@ -134,10 +134,10 @@ function PostworkList() {
                     </Select>
                 </Col>
                 <Col>
-                    <Search
+                    <Input
                         placeholder="ค้นหาด้วยชื่อ"
-                        onSearch={handleSearch}
-                        enterButton
+                        onChange={(e) => handleSearch(e.target.value)}
+                        value={searchTerm}
                         style={{ width: 300 }}
                     />
                 </Col>

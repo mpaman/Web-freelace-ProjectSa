@@ -12,21 +12,21 @@ function Postwork() {
     const [messageApi, contextHolder] = message.useMessage();
 
     const columns: ColumnsType<PostworkInterface> = [
-        {
-            title: "ลำดับ",
-            dataIndex: "ID",
-            key: "id",
-        },
-        {
-            title: "ID ผู้โพส",
-            dataIndex: "id_user",
-            key: "id_user",
-        },
-        {
-            title: "ID งาน",
-            dataIndex: "id_work",
-            key: "id_work",
-        },
+        // {
+        //     title: "ลำดับ",
+        //     dataIndex: "ID",
+        //     key: "id",
+        // },
+        // {
+        //     title: "ID ผู้โพส",
+        //     dataIndex: "id_user",
+        //     key: "id_user",
+        // },
+        // {
+        //     title: "ID งาน",
+        //     dataIndex: "id_work",
+        //     key: "id_work",
+        // },
         {
             title: "ชื่อผู้โพส",
             key: "user_first_name",

@@ -18,11 +18,11 @@ function ManageBooking() {
     const navigate = useNavigate(); // ใช้สำหรับ navigate ไปหน้าอื่น
 
     const columns: ColumnsType<BookingInterface> = [
-        {
-            title: "ID ผู้ใช้",
-            dataIndex: "booker_user_id",
-            key: "booker_user_id",
-        },
+        // {
+        //     title: "ID ผู้ใช้",
+        //     dataIndex: "booker_user_id",
+        //     key: "booker_user_id",
+        // },
         {
             title: "ชื่อผู้จองงาน",
             key: "user_name",

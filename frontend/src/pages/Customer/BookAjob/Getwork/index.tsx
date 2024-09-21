@@ -17,11 +17,11 @@ function ManageSubmissions() {
     const [messageApi, contextHolder] = message.useMessage();
 
     const columns: ColumnsType<SubmissionInterface> = [
-        {
-            title: "ID ผู้ใช้",
-            dataIndex: "booker_user_id",
-            key: "booker_user_id",
-        },
+        // {
+        //     title: "ID ผู้ใช้",
+        //     dataIndex: "booker_user_id",
+        //     key: "booker_user_id",
+        // },
         {
             title: "ชื่อผู้ใช้",
             key: "user_name",
