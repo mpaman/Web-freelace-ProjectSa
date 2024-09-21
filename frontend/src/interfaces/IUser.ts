@@ -12,4 +12,5 @@ export interface UsersInterface {
     Category: string;
     Wages: number;
     Contact: string;
+    Role: string;
 }

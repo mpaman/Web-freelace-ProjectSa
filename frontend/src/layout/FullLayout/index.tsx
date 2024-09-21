@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { Avatar, Space, Button, message, Breadcrumb, Layout } from "antd";
 import { UserOutlined, HomeOutlined, PlusOutlined, BellOutlined, BookOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.png";
 import videoBg from "../../assets/back.mp4"; // Background video
+import { GetUserProfile } from "../../services/https/index";
 
+// Pages and components
 import Dashboard from "../../pages/Customer/BookAjob/Home";
 import Post from "../../pages/Customer/BookAjob/Post";
 import Postwork from "../../pages/Freelance/Post";
@@ -17,11 +19,11 @@ import Getwork from "../../pages/Customer/BookAjob/Getwork";
 import Booking from "../../pages/Customer/BookAjob/Bookingwork";
 import Customer from "../../pages/Customer/Profile/index";
 
-//profile
+// Profile
 import CustomerEdit from "../../pages/Customer/Profile/edit/index";
 import ProfileCustomer from "../../pages/Customer/Profile/profile/index";
 
-//resume
+// Resume
 import Resume from "../../pages/Freelance/Resume";
 import ResumeEdit from "../../pages/Freelance/Resume/edit";
 import ResumeView from "../../pages/Freelance/Resume/view";
@@ -30,6 +32,7 @@ const { Header, Content, Footer } = Layout;
 
 const FullLayout: React.FC = () => {
     const [messageApi, contextHolder] = message.useMessage();
+    const [profile, setProfile] = useState<any>(null);
 
     const Logout = () => {
         localStorage.clear();
@@ -39,20 +42,38 @@ const FullLayout: React.FC = () => {
         }, 2000);
     };
 
+    const getUserProfile = async () => {
+        try {
+            const res = await GetUserProfile();
+            setProfile(res);
+        } catch (error) {
+            messageApi.open({
+                type: "error",
+                content: "Failed to fetch user profile.",
+            });
+        }
+    };
+
+    useEffect(() => {
+        getUserProfile();
+    }, []);
+
     return (
-        <Layout style={{ minHeight: "100vh", position: 'relative' }}>
+        <Layout style={{ minHeight: "100vh", position: "relative" }}>
             {contextHolder}
 
             {/* Background video */}
-            <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                zIndex: 0,
-                overflow: 'hidden'
-            }}>
+            <div
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 0,
+                    overflow: "hidden",
+                }}
+            >
                 <video
                     autoPlay
                     loop
@@ -65,51 +86,64 @@ const FullLayout: React.FC = () => {
                         height: "100%",
                         objectFit: "cover",
                         zIndex: -1, // Ensure the video stays behind the content
-                        filter: "brightness(0.4)" // Adjust brightness for better content visibility
+                        filter: "brightness(0.4)", // Adjust brightness for better content visibility
                     }}
                 >
                     <source src={videoBg} type="video/mp4" />
                 </video>
             </div>
 
-            <Layout style={{ position: 'relative', zIndex: 1 }}>
-                <Header style={{ background: '#06579b', padding: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 2 }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={logo} alt="Logo" style={{ width: 50, margin: '0 10px' }} />
-                        <h1 style={{ color: 'white', margin: '0 10px' }}>Caylance</h1>
+            <Layout style={{ position: "relative", zIndex: 1 }}>
+                <Header
+                    style={{
+                        background: "#06579b",
+                        padding: 0,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        position: "relative",
+                        zIndex: 2,
+                    }}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <img src={logo} alt="Logo" style={{ width: 50, margin: "0 10px" }} />
+                        <h1 style={{ color: "white", margin: "0 10px" }}>Caylance</h1>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
-                        <Button type="text" style={{ color: 'white', margin: '0 20px' }}>
+                    <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
+                        <Button type="text" style={{ color: "white", margin: "0 20px" }}>
                             <Link to="/">
-                                <HomeOutlined style={{ color: 'white' }} />
+                                <HomeOutlined style={{ color: "white" }} />
                                 <span> หน้าหลัก</span>
                             </Link>
                         </Button>
 
-                        <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
+                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
                             <Link to="/works">
-                                <BookOutlined style={{ color: 'white' }} />
+                                <BookOutlined style={{ color: "white" }} />
                                 <span> ข้อมูลงานที่โพส</span>
                             </Link>
                         </Button>
 
-                        <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
-                            <Link to="/resume">
-                                <UserOutlined style={{ color: 'white' }} />
-                                <span> Resume</span>
-                            </Link>
-                        </Button>
+                        {/* Show Resume button only if user's role is FREELANCE */}
+                        {profile?.Role === "FREELANCE" && (
+                            <Button type="text" style={{ color: "white", margin: "0 10px" }}>
+                                <Link to="/resume">
+                                    <UserOutlined style={{ color: "white" }} />
+                                    <span> Resume</span>
+                                </Link>
+                            </Button>
+                        )}
 
-                        <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
+                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
                             <Link to="/work">
-                                <PlusOutlined style={{ color: 'white' }} />
+                                <PlusOutlined style={{ color: "white" }} />
                                 <span> โพสงาน</span>
                             </Link>
                         </Button>
 
-                        <Button type="text" style={{ color: 'white', margin: '0 10px' }}>
+                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
                             <Link to="/bookingbyF">
-                                <BellOutlined style={{ color: 'white' }} />
+                                <BellOutlined style={{ color: "white" }} />
                                 <span> ติดตามการจอง</span>
                             </Link>
                         </Button>
@@ -117,23 +151,32 @@ const FullLayout: React.FC = () => {
                         <Link to="/customer">
                             <Avatar
                                 style={{
-                                    backgroundColor: '#1890ff',
-                                    marginLeft: '20px',
-                                    cursor: 'pointer'
+                                    backgroundColor: "#1890ff",
+                                    marginLeft: "20px",
+                                    cursor: "pointer",
                                 }}
                                 icon={<UserOutlined />}
                             />
                         </Link>
 
-                        <Button type="primary" onClick={Logout} style={{ marginLeft: '20px' }}>
+                        <Button type="primary" onClick={Logout} style={{ marginLeft: "20px" }}>
                             ออกจากระบบ
                         </Button>
                     </div>
                 </Header>
 
-                <Content style={{ margin: "0", padding: '16px', background: "#FFFFFF", minHeight: 'calc(100vh - 80px - 64px)', position: 'relative', zIndex: 1 }}>
+                <Content
+                    style={{
+                        margin: "0",
+                        padding: "16px",
+                        background: "#FFFFFF",
+                        minHeight: "calc(100vh - 80px - 64px)",
+                        position: "relative",
+                        zIndex: 1,
+                    }}
+                >
                     <Breadcrumb style={{ margin: "16px 0" }} />
-                    <div style={{ padding: 24, minHeight: "100%", background: 'rgba(240, 242, 245, 0.8' }}>
+                    <div style={{ padding: 24, minHeight: "100%", background: "rgba(240, 242, 245, 0.8" }}>
                         <Routes>
                             <Route path="/customer" element={<Customer />} />
                             <Route path="/customer/edit/:id" element={<CustomerEdit />} />

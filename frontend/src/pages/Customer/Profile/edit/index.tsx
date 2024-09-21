@@ -149,24 +149,24 @@ function CustomerEdit() {
   return (
     <div style={{ padding: "40px", backgroundColor: "#f0f2f5" }}>
       {contextHolder}
-                  {/* Background video */}
-                  <video
-                autoPlay
-                loop
-                muted
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    zIndex: -1,
-                    filter: "brightness(0.6)", // Reduce brightness for contrast
-                }}
-            >
-                <source src={videoBg} type="video/mp4" />
-            </video>
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: -1,
+          filter: "brightness(0.6)", // Reduce brightness for contrast
+        }}
+      >
+        <source src={videoBg} type="video/mp4" />
+      </video>
       <Card
         style={{
           maxWidth: "800px",

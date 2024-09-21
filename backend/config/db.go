@@ -60,7 +60,6 @@ func SetupDatabase() {
 		&entity.Skill{},
 		&entity.Resume{},
 		&entity.Payment{},
-
 		&entity.Rating{},
 	)
 

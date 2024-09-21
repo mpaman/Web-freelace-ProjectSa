@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Button,
     Card,
@@ -9,17 +9,40 @@ import {
     Col,
     InputNumber,
     DatePicker,
+    Upload,
     Select,
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { CreateUser } from "../../../services/https";
 import { UsersInterface } from "../../../interfaces/IUser";
+import ImgCrop from "antd-img-crop";
 import logo from "../../../assets/logologin.jpg";
 import backgroundVideo from "../../../assets/back.mp4"; // Video background
 
 function SignUpPages() {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
+
+    // State for handling file upload
+    const [fileList, setFileList] = useState([]);
+
+    const onChange = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+    };
+
+    const onPreview = async (file) => {
+        let src = file.url;
+        if (!src) {
+            src = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file.originFileObj);
+                reader.onload = () => resolve(reader.result);
+            });
+        }
+        const imgWindow = window.open(src);
+        imgWindow?.document.write(`<img src="${src}" />`);
+    };
 
     const onFinish = async (values: UsersInterface) => {
         let res = await CreateUser(values);
@@ -211,6 +234,50 @@ function SignUpPages() {
                                             />
                                         </Form.Item>
                                     </Col>
+                                    <Col xs={12}>
+                                        <Form.Item
+                                            label="Role"
+                                            name="role"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Please select your role!",
+                                                },
+                                            ]}
+                                        >
+                                            <Select
+                                                defaultValue=""
+                                                style={{ width: "100%" }}
+                                                options={[
+                                                    { value: "", label: "Select Role", disabled: true },
+                                                    { value: "FREELANCE" },
+                                                    { value: "CUSTOMER" },
+                                                ]}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    {/* <Col xs={24} sm={24} md={12}>
+                                        <Form.Item label="รูปประจำตัว" name="Profile">
+                                            <ImgCrop rotationSlider>
+                                                <Upload
+                                                    listType="picture-card"
+                                                    fileList={fileList}
+                                                    onChange={onChange}
+                                                    onPreview={onPreview}
+                                                    beforeUpload={() => false}
+                                                    maxCount={1}
+                                                    style={{ width: "100%" }}
+                                                >
+                                                    {fileList.length < 1 && (
+                                                        <div style={{ textAlign: "center" }}>
+                                                            <PlusOutlined style={{ fontSize: "24px", color: "#1890ff" }} />
+                                                            <div style={{ marginTop: 8, color: "#1890ff" }}>อัพโหลด</div>
+                                                        </div>
+                                                    )}
+                                                </Upload>
+                                            </ImgCrop>
+                                        </Form.Item>
+                                    </Col> */}
                                     <Col xs={24}>
                                         <Form.Item>
                                             <Button

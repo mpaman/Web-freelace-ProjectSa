@@ -51,6 +51,8 @@ type (
 		Contact string `json: "contact"`
 
 		Profile string `gorm:"type:longtext"`
+
+		Role string `json:"role"`
 	}
 )
 
@@ -118,13 +120,11 @@ func SignUp(c *gin.Context) {
 
 		GenderID: payload.GenderID,
 
-		Category: payload.Category,
-
-		Wages: payload.Wages,
-
 		Contact: payload.Contact,
 
 		Profile: payload.Profile,
+
+		Role: payload.Role,
 	}
 
 	// Save the user to the database
