@@ -117,14 +117,15 @@ const FullLayout: React.FC = () => {
                             </Link>
                         </Button>
 
-                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
-                            <Link to="/works">
-                                <BookOutlined style={{ color: "white" }} />
-                                <span> ข้อมูลงานที่โพส</span>
-                            </Link>
-                        </Button>
+                        {profile?.Role === "CUSTOMER" && (
+                            <Button type="text" style={{ color: "white", margin: "0 10px" }}>
+                                <Link to="/works">
+                                    <BookOutlined style={{ color: "white" }} />
+                                    <span> ข้อมูลงานที่โพส</span>
+                                </Link>
+                            </Button>
+                        )}
 
-                        {/* Show Resume button only if user's role is FREELANCE */}
                         {profile?.Role === "FREELANCE" && (
                             <Button type="text" style={{ color: "white", margin: "0 10px" }}>
                                 <Link to="/resume">
@@ -134,19 +135,23 @@ const FullLayout: React.FC = () => {
                             </Button>
                         )}
 
-                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
-                            <Link to="/work">
-                                <PlusOutlined style={{ color: "white" }} />
-                                <span> โพสงาน</span>
-                            </Link>
-                        </Button>
+                        {profile?.Role === "CUSTOMER" && (
+                            <Button type="text" style={{ color: "white", margin: "0 10px" }}>
+                                <Link to="/work">
+                                    <PlusOutlined style={{ color: "white" }} />
+                                    <span> โพสงาน</span>
+                                </Link>
+                            </Button>
+                        )}
 
-                        <Button type="text" style={{ color: "white", margin: "0 10px" }}>
-                            <Link to="/bookingbyF">
-                                <BellOutlined style={{ color: "white" }} />
-                                <span> ติดตามการจอง</span>
-                            </Link>
-                        </Button>
+                        {profile?.Role === "FREELANCE" && (
+                            <Button type="text" style={{ color: "white", margin: "0 10px" }}>
+                                <Link to="/bookingbyF">
+                                    <BellOutlined style={{ color: "white" }} />
+                                    <span> ติดตามการจอง</span>
+                                </Link>
+                            </Button>
+                        )}
 
                         <Link to="/customer">
                             <Avatar

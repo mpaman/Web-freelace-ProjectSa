@@ -14,10 +14,12 @@ const PostPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [messageApi, contextHolder] = message.useMessage();
     const [bookerUserId, setBookerUserId] = useState<string | null>(null);
+    const [profile, setProfile] = useState<any>(null);  // Use to store the profile
 
     const fetchUserProfile = async () => {
         try {
             const profileRes = await GetUserProfile();
+            setProfile(profileRes);  // Update profile state
             setBookerUserId(profileRes.ID || "No ID");
         } catch (error) {
             messageApi.open({
@@ -88,7 +90,7 @@ const PostPage: React.FC = () => {
             ) {
                 message.error("You have already booked this job.");
             } else {
-                message.error("Booking failed.");
+                message.error("You cannot book your own job.");
             }
         }
     };
@@ -169,18 +171,21 @@ const PostPage: React.FC = () => {
                         </div>
                     </Card>
 
-                    <div style={{
-                        position: 'fixed',
-                        bottom: '70px',
-                        right: '30px',
-                        zIndex: 1000,
-                        backgroundColor: '#fff',
-                        padding: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                        borderRadius: '8px'
-                    }}>
-                        <Button type="primary" size="large" onClick={handleBookJob}>Book Job</Button>
-                    </div>
+                    {/* Display "Book Job" button only if profile is loaded and the role is "FREELANCE" */}
+                    {profile && profile.Role === "FREELANCE" && (
+                        <div style={{
+                            position: 'fixed',
+                            bottom: '70px',
+                            right: '30px',
+                            zIndex: 1000,
+                            backgroundColor: '#fff',
+                            padding: '10px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            borderRadius: '8px'
+                        }}>
+                            <Button type="primary" size="large" onClick={handleBookJob}>Book Job</Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

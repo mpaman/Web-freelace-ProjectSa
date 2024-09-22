@@ -139,33 +139,40 @@ func GetAllBookings(c *gin.Context) {
 // }
 
 func CreateBookingFromPostwork(c *gin.Context) {
-    var input entity.Booking
-    if err := c.ShouldBindJSON(&input); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-        return
-    }
+	var input entity.Booking
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
 
-    var existingBooking entity.Booking
-    if err := config.DB().Where("work_id = ? AND booker_user_id = ?", input.WorkID, input.BookerUserID).First(&existingBooking).Error; err == nil {
-        if existingBooking.Status == "accepted" {
-            // ถ้าผู้ใช้จองงานและสถานะเป็น accepted ให้ตอบกลับว่าจองสำเร็จแล้ว
-            c.JSON(http.StatusOK, gin.H{"message": "Booking already accepted", "redirect": true})
-            return
-        } else {
-            // ถ้ามีการจองที่ยังไม่ได้รับการยอมรับ
-            c.JSON(http.StatusBadRequest, gin.H{"error": "This user has already booked this job"})
-            return
-        }
-    }
+	// ตรวจสอบไม่ให้ poster_user_id และ booker_user_id ซ้ำกัน
+	if input.PosterUserID == input.BookerUserID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Poster cannot book their own job"})
+		return
+	}
+	
+	var existingBooking entity.Booking
+	if err := config.DB().Where("work_id = ? AND booker_user_id = ?", input.WorkID, input.BookerUserID).First(&existingBooking).Error; err == nil {
+		if existingBooking.Status == "accepted" {
+			// ถ้าผู้ใช้จองงานและสถานะเป็น accepted ให้ตอบกลับว่าจองสำเร็จแล้ว
+			c.JSON(http.StatusOK, gin.H{"message": "Booking already accepted", "redirect": true})
+			return
+		} else {
+			// ถ้ามีการจองที่ยังไม่ได้รับการยอมรับ
+			c.JSON(http.StatusBadRequest, gin.H{"error": "This user has already booked this job"})
+			return
+		}
+	}
 
-    // ถ้าไม่พบ booking ที่ซ้ำกัน
-    if err := config.DB().Create(&input).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking"})
-        return
-    }
+	// ถ้าไม่พบ booking ที่ซ้ำกัน
+	if err := config.DB().Create(&input).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking"})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{"message": "Booking created successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Booking created successfully"})
 }
+
 func UpdateBookingStatus(c *gin.Context) {
 	bookingID := c.Param("id")
 	var booking entity.Booking
@@ -194,5 +201,3 @@ func UpdateBookingStatus(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Booking status updated successfully"})
 }
-
-
