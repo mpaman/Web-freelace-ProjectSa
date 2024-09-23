@@ -12,8 +12,10 @@ import (
 	"example.com/sa-67-example/controller/users"
 	"example.com/sa-67-example/controller/work"
 	"github.com/gin-gonic/gin"
-
     "example.com/sa-67-example/controller/resume"
+
+    "example.com/sa-67-example/controller/payment"
+	"example.com/sa-67-example/controller/rating"
 
 )
 
@@ -75,6 +77,9 @@ func main() {
     authorized.PUT("/resumes/:id", resume.UpdateResume)
     authorized.DELETE("/resumes/:id", resume.DeleteResume)
     
+    authorized.GET("/works/:workID", work.GetWagesByWorkID) // POST for creating rating
+    authorized.POST("/Payment", payment.CreatePayment) // POST for creating payment
+	authorized.POST("/Rating", rating.CreateRating) // POST for creating rating
     
     r.GET("/", func(c *gin.Context) {
         c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)

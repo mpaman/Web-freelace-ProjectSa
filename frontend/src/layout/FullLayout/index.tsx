@@ -28,6 +28,12 @@ import Resume from "../../pages/Freelance/Resume";
 import ResumeEdit from "../../pages/Freelance/Resume/edit";
 import ResumeView from "../../pages/Freelance/Resume/view";
 
+
+import PaymentOptions from "../../pages/Payment/options";
+import QR from "../../pages/Payment/options/QRcode";
+import DebitCard from "../../pages/Payment/options/DebitCard";
+import Rating from "../../pages/Rating";
+
 const { Header, Content, Footer } = Layout;
 
 const FullLayout: React.FC = () => {
@@ -205,6 +211,11 @@ const FullLayout: React.FC = () => {
                             <Route path="/resume" element={<Resume />} />
                             <Route path="/resume/edit/:id" element={<ResumeEdit />} />
                             <Route path="/resume/view/:id" element={<ResumeView />} />
+
+                            <Route path="/payment" element={<PaymentOptions />} />
+                            <Route path="/payment/QRcodePayment" element={<QR />} />
+                            <Route path="/payment/DebitCardPayment" element={<DebitCard />} />
+                            <Route path="/Rating" element={<Rating />} />
                         </Routes>
                     </div>
                 </Content>

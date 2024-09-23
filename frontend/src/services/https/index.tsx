@@ -218,7 +218,68 @@ async function GetResume() {
         .then((res) => res)
         .catch((e) => e.response);
 }
+async function GetRatings() {
+    return await axios
+        .get(`${apiUrl}/Rating`, requestOptions) // Endpoint สำหรับดึงคะแนน
+        .then((res) => res)
+        .catch((e) => e.response);
+}
 
+// ฟังก์ชันสำหรับดึงคะแนนตาม ID
+async function GetRatingById(id: number) {
+    return await axios
+        .get(`${apiUrl}/Rating/${id}`, requestOptions) // Endpoint สำหรับดึงคะแนนตาม ID
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+
+// ฟังก์ชันสำหรับดึงข้อมูลการชำระเงิน
+async function GetPayments() {
+    return await axios
+        .get(`${apiUrl}/Payment`, requestOptions) // Endpoint สำหรับดึงข้อมูลการชำระเงิน
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+// ฟังก์ชันสำหรับดึงการชำระเงินตาม ID
+async function GetPaymentById(id: number) {
+    return await axios
+        .get(`${apiUrl}/Payment/${id}`, requestOptions) // Endpoint สำหรับดึงการชำระเงินตาม ID
+        .then((res) => res)
+        .catch((e) => e.response);
+}
+
+const GetWagesByWorkID = async (workID: number) => {
+    try {
+        const res = await axios.get(`${apiUrl}/works/${workID}`, requestOptions);
+        console.log("Wages response:", res.data); // ตรวจสอบโครงสร้าง response
+        // แก้ไขจาก res.data.Wages เป็น res.data.wages ตามข้อมูลที่ได้มา
+        if (res.data && res.data.wages) {
+            return res.data.wages;
+        } else {
+            throw new Error("Wages not found in response");
+        }
+    } catch (e) {
+        console.error("Error fetching wages:", e);
+        return null; // คืนค่า null หรือ handle error ตามต้องการ
+    }
+};
+
+export const CreatePayment = async (paymentData: any) => {
+    return await axios
+        .post(`${apiUrl}/Payment`, paymentData, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+};
+
+// Rating Management
+export const CreateRating = async (ratingData: any) => {
+    return await axios
+        .post(`${apiUrl}/Rating`, ratingData, requestOptions)
+        .then((res) => res)
+        .catch((e) => e.response);
+};
 export {
     SignIn,
 
@@ -248,4 +309,9 @@ export {
     DeletePostworkById,
     CreateBooking,
 
+    GetRatings,
+    GetRatingById,
+    GetPayments,
+    GetPaymentById,
+    GetWagesByWorkID
 };

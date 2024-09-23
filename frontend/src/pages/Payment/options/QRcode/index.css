@@ -1,0 +1,16 @@
+/* QR.css */
+.card-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh; /* Make the wrapper fill the viewport height */
+  }
+  
+  .card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card img {
+    margin: 0 auto;
+  }
+  

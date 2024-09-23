@@ -182,3 +182,19 @@ func Delete(c *gin.Context) {
 
     c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
 }
+// GetWagesByWorkID handles the request to get wages by work ID
+func GetWagesByWorkID(c *gin.Context) {
+    ID := c.Param("workID") // รับ workID จากพารามิเตอร์
+
+    var work entity.Work
+
+    db := config.DB()
+    // ค้นหา work โดยใช้ workID
+    if err := db.Where("id = ?", ID).First(&work).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Work not found"})
+        return
+    }
+
+    // ส่งค่าจ้างกลับไป
+    c.JSON(http.StatusOK, gin.H{"wages": work.Wages})
+}

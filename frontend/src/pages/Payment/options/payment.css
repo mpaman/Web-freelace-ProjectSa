@@ -1,0 +1,55 @@
+/* Container for the card and content */
+.table-container {
+  display: flex;
+  justify-content: center; /* Center the cards horizontally */
+  flex-wrap: wrap; /* Allow cards to wrap if necessary */
+  gap: 20px; /* Space between cards */
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+/* Styling for each card container */
+.card-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling for individual cards */
+.custom-card {
+  width: 14rem; /* Adjust card width */
+  border-radius: 20px; /* Match card radius to outer card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 20px; /* Add bottom margin */
+  text-align: center; /* Center text inside card */
+}
+
+/* Hover effect for cards */
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Image styling for cards */
+.custom-card img {
+  width: 100%; /* Make image fit the card width */
+  height: auto; /* Maintain aspect ratio */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Centering title and card content */
+.custom-card .card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+/* Centering text for the whole page */
+.centered-text {
+  text-align: center;
+  margin: 0 auto; /* Center text container */
+}

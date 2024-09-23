@@ -36,6 +36,11 @@ const Resume = Loadable(lazy(() => import("../pages/Freelance/Resume")));
 const EditResume = Loadable(lazy(() => import("../pages/Freelance/Resume/edit")));
 const ViewResume = Loadable(lazy(() => import("../pages/Freelance/Resume/view")));
 
+const PaymentOptions = Loadable(lazy(() => import("../pages/Payment/options")));
+const QR = Loadable(lazy(() => import("../pages/Payment/options/QRcode")));
+const DebitCard = Loadable(lazy(() => import("../pages/Payment/options/DebitCard")));
+const Rating = Loadable(lazy(() => import("../pages/Rating")));
+
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
     return {
         path: "/",
@@ -157,6 +162,18 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
                 ],
             },
 
+            {
+                path: "Rating",
+                element: <Rating/>
+            },
+            {
+                path: "payment",
+                children: [
+                    { path: "",element: <PaymentOptions />,},
+                    { path: "QRcodePayment",element: <QR />},
+                    { path: "DebitCardPayment",element: <DebitCard />}
+                ]
+            },
 
 
         ],
