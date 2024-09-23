@@ -21,9 +21,19 @@ npm instal dayjs --save
 
 npm install antd-img-crop
 
+npm install react-bootstrap bootstrap
+
 npm run dev
 
+--- frontend ---
 
+cd frontend
+
+npm install -g nodemon
+
+npm i express qrcode promptpay-qr body-parser lodash cors
+
+npm run 0 
 
 --------------------------------------------------------------------------------------------------------
 backend ใช้
