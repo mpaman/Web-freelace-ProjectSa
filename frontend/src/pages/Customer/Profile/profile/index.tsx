@@ -3,7 +3,7 @@ import { Space, Button, Col, Row, Card, Divider, message } from "antd";
 import { GetUserById } from "../../../../services/https";
 import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
 import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
-
+import videoBg from "../../../../assets/back.mp4";
 function CustomerView() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -58,6 +58,24 @@ function CustomerView() {
             padding: '50px 20px',
         }}>
             {contextHolder}
+                                    {/* Background video */}
+                                    <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <Card
                 style={{
                     maxWidth: '1000px',

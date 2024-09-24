@@ -5,6 +5,7 @@ import { GetUsers } from "../../../services/https/index";
 import { UsersInterface } from "../../../interfaces/IUser";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import videoBg from "../../../assets/back.mp4";
 
 const thaiProvinces = [
     { id: 1, name: "กรุงเทพมหานคร" },
@@ -51,6 +52,24 @@ function UserProfile() {
     return (
         <>
             {contextHolder}
+                        {/* Background video */}
+                        <video
+                autoPlay
+                loop
+                muted
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    zIndex: -1,
+                    filter: "brightness(0.6)",
+                }}
+            >
+                <source src={videoBg} type="video/mp4" />
+            </video>
             <div
                 style={{
                     padding: "40px",
