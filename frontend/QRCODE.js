@@ -17,7 +17,7 @@ const server = app.listen(3000, () => {
 
 app.post('/generateQR', (req, res) => {
   const amount = parseFloat(_.get(req, ['body', 'amount']));
-  const mobileNumber = '0658286166';
+  const mobileNumber = '0988675090';
   const payload = generatePayload(mobileNumber, { amount });
   const option = {
     color: {

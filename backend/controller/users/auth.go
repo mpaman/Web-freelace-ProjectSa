@@ -138,22 +138,22 @@ func SignUp(c *gin.Context) {
 	}
 
 	resume := entity.Resume{
-        PersonalID: 0, // ตั้งค่า PersonalID เป็น 0
-        StudyID: 0, 
-        ExperienceID: 0, 
-        SkillID: 0, 
-    }
+		PersonalID:   0, // ตั้งค่า PersonalID เป็น 0
+		StudyID:      0,
+		ExperienceID: 0,
+		SkillID:      0,
+	}
 
-    if err := db.Create(&resume).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create resume"})
-        return
-    }
+	if err := db.Create(&resume).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create resume"})
+		return
+	}
 
 	user.ResumeID = resume.ID
-    if err := db.Save(&user).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user with resume ID"})
-        return
-    }
+	if err := db.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user with resume ID"})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
 
@@ -214,6 +214,6 @@ func SignIn(c *gin.Context) {
 
 	}
 
-    c.JSON(http.StatusOK, gin.H{"token_type": "Bearer", "token": signedToken, "id": user.ID, "resume_id": user.ResumeID})
+	c.JSON(http.StatusOK, gin.H{"token_type": "Bearer", "token": signedToken, "id": user.ID, "resume_id": user.ResumeID})
 
 }
