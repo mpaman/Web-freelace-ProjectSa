@@ -33,13 +33,14 @@ func main() {
     r.POST("/signin", users.SignIn)
     r.GET("/genders", genders.GetAll)
     
-    r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)//สร้าง Booking
-	
-    // r.POST("/upload", submission.UploadFile)
+    r.POST("/postwork/:id/bookings", booking.CreateBookingFromPostwork)//สร้าง Booking inpost call
+    r.PUT("/works/bookings/:id", booking.UpdateBookingStatus)//ตาราง manage update status
+
+
     r.POST("/postwork/:id/sent", submission.CreateSubmission)//สร้าง submission
-    r.GET("/submissions", submission.GetSubmissions)//ตาราง sub
     r.GET("/works/:workID/submissions", submission.GetSubmissionsByWorkID)
-    r.PUT("/works/bookings/:id", booking.UpdateBookingStatus)//ตาราง sub
+
+
     // Authorized Routes
     authorized := r.Group("/")
 	authorized.Use(middlewares.Authorizes())
@@ -61,7 +62,7 @@ func main() {
     authorized.GET("/postworks", postwork.GetAll)
     authorized.GET("/postwork/:id", postwork.Get)
 
-	authorized.GET("/works/:workID/bookings", booking.GetBookingsByWorkID)
+	authorized.GET("/works/:workID/bookings", booking.GetBookingsByWorkID)//mangebooking ดึง
 
     authorized.GET("/bookings", booking.GetAllBookings)
     authorized.GET("/booking/:id", booking.Get)
