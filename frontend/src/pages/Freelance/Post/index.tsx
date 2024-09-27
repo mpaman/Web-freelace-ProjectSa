@@ -32,8 +32,8 @@ function Work() {
         },
         // {
         //     title: "ลำดับ",
-        //     dataIndex: "ID",
-        //     key: "ID",
+        //     dataIndex: "work_id",
+        //     render: (record) => <>{record?.work?.WorkID}</>,
         // },
         // {
         //     title: "ID ผู้ใช้",

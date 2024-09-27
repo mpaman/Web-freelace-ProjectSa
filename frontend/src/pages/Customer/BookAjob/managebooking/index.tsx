@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Table, message, Spin, Select, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams, useNavigate } from "react-router-dom";
-import { GetBookingsByWorkID, GetUserById, UpdateBookingStatus,GetWagesByWorkID} from "../../../../services/https/index";
+import { GetBookingsByWorkID, GetUserById, UpdateBookingStatus} from "../../../../services/https/index";
 import { BookingInterface } from "../../../../interfaces/Booking";
 import { UsersInterface } from "../../../../interfaces/IUser"; // Interface ของผู้ใช้
 import videoBg from "../../../../assets/back.mp4";

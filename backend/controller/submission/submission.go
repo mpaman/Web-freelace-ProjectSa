@@ -5,48 +5,44 @@ import (
     "example.com/sa-67-example/entity"
     "github.com/gin-gonic/gin"
     "net/http"
-    "os"
-    "path/filepath"
+    // "os"
+    // "path/filepath"
 )
 
-// Handle file upload
-func UploadFile(c *gin.Context) {
-    file, err := c.FormFile("file")
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "File not uploaded"})
-        return
-    }
+// // Handle file upload
+// func UploadFile(c *gin.Context) {
+//     file, err := c.FormFile("file")
+//     if err != nil {
+//         c.JSON(http.StatusBadRequest, gin.H{"error": "File not uploaded"})
+//         return
+//     }
+//     uploadDir := "./uploads/"
+//     filePath := filepath.Join(uploadDir, file.Filename)
+//     if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+//         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+//         return
+//     }
+//     if err := c.SaveUploadedFile(file, filePath); err != nil {
+//         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+//         return
+//     }
+//     c.JSON(http.StatusOK, gin.H{
+//         "fileLink": file.Filename, // Send filename to the frontend
+//     })
+// }
 
-    uploadDir := "./uploads/"
-    filePath := filepath.Join(uploadDir, file.Filename)
+// // Handle file download
+// func DownloadFile(c *gin.Context) {
+//     fileName := c.Param("filename")
+//     filePath := filepath.Join("./uploads/", fileName)
 
-    if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
-        return
-    }
+//     if _, err := os.Stat(filePath); os.IsNotExist(err) {
+//         c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
+//         return
+//     }
 
-    if err := c.SaveUploadedFile(file, filePath); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-        return
-    }
-
-    c.JSON(http.StatusOK, gin.H{
-        "fileLink": file.Filename, // Send filename to the frontend
-    })
-}
-
-// Handle file download
-func DownloadFile(c *gin.Context) {
-    fileName := c.Param("filename")
-    filePath := filepath.Join("./uploads/", fileName)
-
-    if _, err := os.Stat(filePath); os.IsNotExist(err) {
-        c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
-        return
-    }
-
-    c.File(filePath)
-}
+//     c.File(filePath)
+// }
 
 func CreateSubmission(c *gin.Context) {
     var submission entity.Submission
@@ -70,7 +66,6 @@ func GetSubmissions(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch submissions"})
         return
     }
-
     c.JSON(http.StatusOK, submissions)
 }
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Row, Col, Input, Typography, Space, Button, Form, message, Avatar, InputNumber } from "antd";
 import { GetWorkById, UpdateWorkById, CreateWork, GetUserProfile } from "../../../../services/https/index";
 import videoBg from "../../../../assets/back.mp4";
+
 const { Text } = Typography;
 
 export default function PostEdit() {
@@ -13,6 +14,7 @@ export default function PostEdit() {
     const [profileImage, setProfileImage] = useState<string>("");
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
+    
 
     useEffect(() => {
         fetchUserProfile();
@@ -179,6 +181,13 @@ export default function PostEdit() {
                             <Button type="primary" htmlType="submit" size="large" style={{ width: "150px", height: "50px", borderRadius: "8px" }}>
                                 {id ? "แก้ไขข้อมูล" : "บันทึกข้อมูล"}
                             </Button>
+                            <Space>
+                                    <Link to="/work">
+                                        <Button htmlType="button" style={{ marginRight: "10px",width: "150px", height: "50px", borderRadius: "8px" }}>
+                                            ยกเลิก
+                                        </Button>
+                                    </Link>
+                                </Space>
                         </div>
                     </Form.Item>
                 </Form>

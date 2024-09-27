@@ -1,9 +1,7 @@
 package booking
 
 import (
-	"math/rand"
 	"net/http"
-	"time"
 	// "gorm.io/gorm"
 	"example.com/sa-67-example/config"
 	"example.com/sa-67-example/entity"
@@ -11,44 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const numberBytes = "0123456789"
 
-// GenerateRandomBookingID generates a unique BookingID with 2 random letters and 3 random digits
-func GenerateRandomBookingID() string {
-	rand.Seed(time.Now().UnixNano())
-	b := make([]byte, 2+3)
-	for i := 0; i < 2; i++ {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
-	}
-	for i := 2; i < 5; i++ {
-		b[i] = numberBytes[rand.Intn(len(numberBytes))]
-	}
-	return string(b)
-}
-
-// IsBookingIDUnique checks if the generated BookingID is unique in the database
-func IsBookingIDUnique(bookingID string) bool {
-	db := config.DB()
-	var booking entity.Booking
-	result := db.Where("id = ?", bookingID).First(&booking)
-	return result.RowsAffected == 0
-}
-
-// GetAll fetches all booking entities
-func GetAll(c *gin.Context) {
-	var bookings []entity.Booking
-
-	db := config.DB()
-	results := db.Preload("Work").Preload("BookerUser").Preload("PosterUser").Find(&bookings)
-
-	if results.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, bookings)
-}
 
 // Get fetches a specific booking entity by ID
 func Get(c *gin.Context) {
