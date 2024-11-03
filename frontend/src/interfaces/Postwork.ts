@@ -8,6 +8,7 @@ export interface PostworkInterface {
     first_name: string; // ชื่อจริงของผู้ใช้
     last_name: string;  // นามสกุลของผู้ใช้
     email: string;      // อีเมลของผู้ใช้
+    Profile?: string;
     // เพิ่มฟิลด์อื่นๆ ของ Users ตามที่กำหนดใน Go struct
   };
   Work?: {

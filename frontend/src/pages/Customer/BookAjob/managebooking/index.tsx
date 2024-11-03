@@ -84,54 +84,8 @@ function ManageBooking() {
                 </Button>
             ),
         },
-        // {
-        //     title: "ชำระเงิน",
-        //     key: "payment_action",
-        //     render: (record) => (
-        //         <Button
-        //             type="primary"
-        //             onClick={() => handlePayment(record)}
-        //             disabled={!record.file_link} // Disable if there's no file link
-        //         >
-        //             ชำระเงิน
-        //         </Button>
-        //     ),
-        // },
     ];
 
-    // const handlePayment = async (record: BookingInterface) => {
-    //     const { work_id, booker_user_id, poster_user_id } = record;
-    
-    //     try {
-    //         // เรียกใช้ GetWagesByWorkID เพื่อดึงค่าจ้าง
-    //         const wages = await GetWagesByWorkID(work_id);
-    
-    //         if (wages !== null) {
-    //             // ถ้าได้ค่าจ้างมาแล้ว จะแสดง message และนำทางไปที่หน้า payment พร้อมส่งข้อมูลทั้งหมดไป
-    //             console.log(`Navigating to /payment with workId: ${work_id}, bookerUserId: ${booker_user_id}, posterUserId: ${poster_user_id}, wages: ${wages}`);
-    //             messageApi.open({
-    //                 type: "info",
-    //                 content: `กำลังนำไปสู่หน้าชำระเงินสำหรับงาน ID: ${work_id} โดยผู้ใช้ ID: ${booker_user_id}`,
-    //             });
-    //             navigate('/payment', {
-    //                 state: {
-    //                     workId: work_id,
-    //                     bookerUserId: booker_user_id,
-    //                     posterUserId: poster_user_id,
-    //                     wages: wages, // ส่ง wages ไปด้วย
-    //                 },
-    //             });
-    //         } else {
-    //             throw new Error("ไม่สามารถดึงค่าจ้างได้");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching wages:", error);
-    //         messageApi.open({
-    //             type: "error",
-    //             content: "เกิดข้อผิดพลาดในการดึงค่าจ้าง",
-    //         });
-    //     }
-    // };
 
     const getUserById = async (userId: number) => {
         try {

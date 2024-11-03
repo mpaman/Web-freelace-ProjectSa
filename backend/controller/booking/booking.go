@@ -8,39 +8,21 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
-
-
-
-// Get fetches a specific booking entity by ID
-func Get(c *gin.Context) {
-	ID := c.Param("id")
-	var booking entity.Booking
-
-	db := config.DB()
-	result := db.Preload("Work").Preload("BookerUser").Preload("PosterUser").First(&booking, ID)
-
-	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, booking)
-}
-
 func GetBookingsByWorkID(c *gin.Context) {
-	workID := c.Param("workID")
+    workID := c.Param("workID") // รับค่า workID จาก URL parameter
 
-	var bookings []entity.Booking
-	db := config.DB()
+    var bookings []entity.Booking // สร้าง slice เพื่อเก็บรายการการจอง
+    db := config.DB() // เชื่อมต่อกับฐานข้อมูล
 
-	result := db.Where("work_id = ?", workID).Find(&bookings)
-	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
-		return
-	}
+    result := db.Where("work_id = ?", workID).Find(&bookings) // ค้นหาข้อมูลการจองที่มี work_id ตรงกับ workID ที่รับมา
+    if result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()}) // ถ้าพบข้อผิดพลาด ให้ส่งข้อความผิดพลาดกลับไป
+        return
+    }
 
-	c.JSON(http.StatusOK, bookings)
+    c.JSON(http.StatusOK, bookings) // ส่งข้อมูลการจองทั้งหมดกลับไปในรูปแบบ JSON
 }
+
 
 // Delete handles deleting a specific booking entity by ID
 func Delete(c *gin.Context) {
@@ -100,34 +82,36 @@ func CreateBookingFromPostwork(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Booking created successfully"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Booking created successfully"})
 }
 
 func UpdateBookingStatus(c *gin.Context) {
-	bookingID := c.Param("id")
-	var booking entity.Booking
-	var input struct {
-		Status string `json:"status"`
-	}
-	if err := c.ShouldBindJSON(&input); err != nil {
-		fmt.Printf("Binding error: %v\n", err) // Debugging line
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
+    bookingID := c.Param("id") // รับค่า id ของการจองจาก URL parameter
+    var booking entity.Booking // สร้างตัวแปร booking สำหรับเก็บข้อมูลการจอง
 
-	// Debugging line
-	fmt.Printf("Received status: %s\n", input.Status)
+    var input struct {
+        Status string `json:"status"` // โครงสร้างข้อมูลสำหรับการรับข้อมูล JSON ที่มีฟิลด์ Status
+    }
+    if err := c.ShouldBindJSON(&input); err != nil {
+        fmt.Printf("Binding error: %v\n", err) // Debugging line
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+        return
+    }
 
-	if err := config.DB().Where("id = ?", bookingID).First(&booking).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Booking not found"})
-		return
-	}
+    // Debugging line
+    fmt.Printf("Received status: %s\n", input.Status)
 
-	booking.Status = input.Status
-	if err := config.DB().Save(&booking).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update booking status"})
-		return
-	}
+    if err := config.DB().Where("id = ?", bookingID).First(&booking).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Booking not found"}) // ถ้าหากไม่พบ booking ส่งข้อความผิดพลาดกลับไป
+        return
+    }
 
-	c.JSON(http.StatusOK, gin.H{"message": "Booking status updated successfully"})
+    booking.Status = input.Status // อัปเดตสถานะของการจองตามที่รับมาใน input
+    if err := config.DB().Save(&booking).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update booking status"}) // ถ้าพบข้อผิดพลาดในการบันทึกข้อมูล ส่งข้อความผิดพลาดกลับไป
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "Booking status updated successfully"}) // ส่งข้อความยืนยันว่าการอัปเดตสถานะสำเร็จ
 }
+

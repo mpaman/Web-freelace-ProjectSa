@@ -5,15 +5,15 @@ import (
 )
 
 type Work struct {
-	gorm.Model
+    gorm.Model
 
-	WorkID string `gorm:"unique;not null" json:"work_id"`
+    WorkID string `gorm: json:"work_id"`
 
-	Info string `json:"info"`
+    Info string `json:"info"`
 
-	Wages uint `json:"wages"`
+    Wages uint `json:"wages"`
 
-	Contact string `json:"contact"`
+    Contact string `json:"contact"`
 
-	Category string `json:"category"`
+    Category string `json:"category"`
 }

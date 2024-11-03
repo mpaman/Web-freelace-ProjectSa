@@ -4,12 +4,12 @@ export interface WorkInterface {
 
     WorkID?: string;
 
-    Info?: string;
+    info?: string;
 
-    Wages?: number;
+    wages?: number;
 
-    Contact?: string;
+    contact?: string;
 
-    Category?: string;
+    category?: string;
 
 }

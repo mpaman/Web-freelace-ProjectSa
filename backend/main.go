@@ -13,7 +13,6 @@ import (
 	"example.com/sa-67-example/controller/work"
 	"github.com/gin-gonic/gin"
     "example.com/sa-67-example/controller/resume"
-
     "example.com/sa-67-example/controller/payment"
 	"example.com/sa-67-example/controller/rating"
 
@@ -38,7 +37,7 @@ func main() {
 
 
     r.POST("/postwork/:id/sent", submission.CreateSubmission)//สร้าง submission
-    r.GET("/works/:workID/submissions", submission.GetSubmissionsByWorkID)
+    r.GET("/works/:workID/submissions", submission.GetSubmissionsByWorkID)//Getwork
 
 
     // Authorized Routes
@@ -63,9 +62,7 @@ func main() {
     authorized.GET("/postwork/:id", postwork.Get)
 
 	authorized.GET("/works/:workID/bookings", booking.GetBookingsByWorkID)//mangebooking ดึง
-
     authorized.GET("/bookings", booking.GetAllBookings)
-    authorized.GET("/booking/:id", booking.Get)
     authorized.DELETE("/booking/:id", booking.Delete)
 
 

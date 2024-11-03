@@ -1,9 +1,9 @@
 export interface UsersInterface {
     ID?: number;
 
-    FirstName?: string;
+    first_name?: string;
 
-    LastName?: string;
+    last_name?: string;
 
     Email?: string;
 

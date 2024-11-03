@@ -113,7 +113,7 @@ const FullLayout: React.FC = () => {
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <img src={logo} alt="Logo" style={{ width: 50, margin: "0 10px" }} />
-                        <h1 style={{ color: "white", margin: "0 10px" }}>Caylance</h1>
+                        <h1 style={{ color: "white", margin: "0 10px" }}>Capylance</h1>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
                         <Button type="text" style={{ color: "white", margin: "0 20px" }}>

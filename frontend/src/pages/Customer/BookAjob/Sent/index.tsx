@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, message, Input, Typography, Space } from 'antd';
-import { FileOutlined, PhoneOutlined, MoneyCollectOutlined, UploadOutlined } from "@ant-design/icons";
+import { FileOutlined, PhoneOutlined, MoneyCollectOutlined, UploadOutlined} from "@ant-design/icons";
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetPostworkById, GetUserProfile } from '../../../../services/https/index';
 import axios from 'axios';
@@ -39,9 +39,10 @@ const Sent: React.FC = () => {
 
     useEffect(() => {
         fetchUserProfile();
+    
         const fetchPostwork = async () => {
             try {
-                const res = await GetPostworkById(postId);
+                const res = await GetPostworkById(postId!); // ใช้ ! เพื่อลบความไม่แน่นอน
                 if (res.status === 200) {
                     setPostwork(res.data);
                 } else {
@@ -59,9 +60,10 @@ const Sent: React.FC = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchPostwork();
     }, [postId, messageApi]);
+    
 
     const handleAccept = async () => {
         if (bookerUserId && fileLink) {
@@ -158,7 +160,7 @@ const Sent: React.FC = () => {
                         placeholder="ใส่ลิงก์ไฟล์ที่นี่"
                         value={fileLink || ''}
                         onChange={(e) => setFileLink(e.target.value)}
-                        prefix={<UploadOutlined />}
+                        prefix={<span><UploadOutlined /></span>}
                     />
                 </div>
 

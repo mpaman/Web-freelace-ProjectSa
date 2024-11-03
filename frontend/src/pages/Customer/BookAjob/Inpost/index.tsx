@@ -22,10 +22,17 @@ const PostPage: React.FC = () => {
             setProfile(profileRes);  // Update profile state
             setBookerUserId(profileRes.ID || "No ID");
         } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: "Failed to fetch user profile",
-            });
+            if (error instanceof Error) {
+                messageApi.open({
+                    type: "error",
+                    content: error.message || "Failed to fetch user profile",
+                });
+            } else {
+                messageApi.open({
+                    type: "error",
+                    content: "An unknown error occurred",
+                });
+            }
         }
     };
 
@@ -38,7 +45,16 @@ const PostPage: React.FC = () => {
         }
     };
 
+    // ตรวจสอบว่า postId มีค่าหรือไม่ก่อนที่จะ fetch data
     useEffect(() => {
+        if (!postId) {
+            messageApi.open({
+                type: "error",
+                content: "Invalid post ID",
+            });
+            return;
+        }
+
         fetchUserProfile();
         const fetchPostwork = async () => {
             try {
@@ -52,10 +68,17 @@ const PostPage: React.FC = () => {
                     });
                 }
             } catch (error) {
-                messageApi.open({
-                    type: "error",
-                    content: "Error fetching post details",
-                });
+                if (axios.isAxiosError(error)) {
+                    messageApi.open({
+                        type: "error",
+                        content: error.response?.data?.error || "Error fetching post details",
+                    });
+                } else {
+                    messageApi.open({
+                        type: "error",
+                        content: "An unknown error occurred",
+                    });
+                }
             } finally {
                 setLoading(false);
             }
@@ -63,6 +86,7 @@ const PostPage: React.FC = () => {
 
         fetchPostwork();
     }, [postId, messageApi]);
+
 
     const handleBookJob = async () => {
         const bookingPayload = {
@@ -84,13 +108,16 @@ const PostPage: React.FC = () => {
             }
         } catch (error) {
             if (
+                axios.isAxiosError(error) &&
                 error.response &&
                 error.response.status === 400 &&
                 error.response.data.error === "This user has already booked this job"
             ) {
                 message.error("You have already booked this job.");
-            } else {
+            } else if (axios.isAxiosError(error)) {
                 message.error("You cannot book your own job.");
+            } else {
+                message.error("An unknown error occurred while booking the job.");
             }
         }
     };

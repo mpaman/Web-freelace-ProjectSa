@@ -27,12 +27,12 @@ func GenerateRandomWorkID() string {
 }
 
 // IsWorkIDUnique checks if the generated WorkID is unique in the database
-func IsWorkIDUnique(workID string) bool {
-    db := config.DB()
-    var work entity.Work
-    result := db.Where("work_id = ?", workID).First(&work)
-    return result.RowsAffected == 0
-}
+// func IsWorkIDUnique(WorkID string) bool {
+//     db := config.DB()
+//     var work entity.Work
+//     result := db.Where("work_id = ?", WorkID).First(&work)
+//     return result.RowsAffected == 0 // returns true if no records are found
+// }
 
 // GetAll fetches all work entities
 func GetAll(c *gin.Context) {
@@ -66,16 +66,12 @@ func Get(c *gin.Context) {
 }
 
 // Create handles the creation of a new work entity
+// Create handles the creation of a new work entity
 func Create(c *gin.Context) {
     var work entity.Work
 
-    // Generate a unique WorkID
-    for {
-        work.WorkID = GenerateRandomWorkID()
-        if IsWorkIDUnique(work.WorkID) {
-            break
-        }
-    }
+    // Generate a WorkID (can be random or fixed for non-unique cases)
+    work.WorkID = GenerateRandomWorkID() // You can decide to keep this random or set it to a fixed value
 
     // Bind the JSON payload to the Work struct
     if err := c.ShouldBindJSON(&work); err != nil {
@@ -88,6 +84,12 @@ func Create(c *gin.Context) {
     // Save the new Work to the database
     if err := db.Create(&work).Error; err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Check if work.ID is set after creating the work
+    if work.ID == 0 {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create work, ID not set"})
         return
     }
 
@@ -105,6 +107,7 @@ func Create(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find user"})
         return
     }
+
     // Create a new Postwork entry
     var postwork entity.Postwork
     postwork.IDuser = user.ID

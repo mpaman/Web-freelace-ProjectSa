@@ -12,6 +12,7 @@ const { Text } = Typography;
 
 function Work() {
     const navigate = useNavigate();
+    //useNavigate() เป็น hook จาก React Router ที่ใช้เพื่อเปลี่ยนเส้นทาง (navigate) ผู้ใช้ไปยังหน้าอื่นในแอปพลิเคชัน เช่น การเปลี่ยนไปยังหน้าใหม่โดยไม่ต้องโหลดหน้าเว็บใหม่ทั้งหมด
     const [work, setWorks] = useState<PostworkInterface[]>([]);
     const [profile, setProfile] = useState<any>(null);
     const [messageApi, contextHolder] = message.useMessage();
@@ -30,10 +31,15 @@ function Work() {
                     />
                 ),
         },
+        {
+            title: "รหัส",
+            key: "WorkID",
+            render: (record) => <>{record?.Work?.WorkID}</>,
+        },
         // {
         //     title: "ลำดับ",
         //     dataIndex: "work_id",
-        //     render: (record) => <>{record?.work?.WorkID}</>,
+        //     key: "work_id",
         // },
         // {
         //     title: "ID ผู้ใช้",
@@ -161,7 +167,7 @@ function Work() {
                 {profile && (
                     <Col>
                         <Space direction="vertical" align="center">
-                            <Avatar src={profile?.Profile} size={128} shape="square" />
+                            <Avatar src={profile?.Profile} size={300} shape="square" />
                             <Text strong>
                                 {profile?.FirstName} {profile?.LastName}
                             </Text>
@@ -180,7 +186,7 @@ function Work() {
                     <Space>
                         <Link to="/work/create">
                             <Button type="primary" icon={<PlusOutlined />}>
-                                สร้างข้อมูล
+                                สร้างงาน
                             </Button>
                         </Link>
                     </Space>
